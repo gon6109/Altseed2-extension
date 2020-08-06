@@ -1,13 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>Altseed2Extension</RootNamespace>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputPath>$(SolutionDir)Build/</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <Platforms>AnyCPU;x64</Platforms>
+    <IsPackable>false</IsPackable>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Altseed2-extension\Altseed2-extension.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Altseed2">
+      <HintPath>..\lib\Altseed2.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\lib\Altseed2_Core.dll" Link="Altseed2_Core.dll">
@@ -19,12 +35,6 @@
     <None Include="..\lib\libAltseed2_Core.dylib" Link="libAltseed2_Core.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="Altseed2">
-      <HintPath>..\lib\Altseed2.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

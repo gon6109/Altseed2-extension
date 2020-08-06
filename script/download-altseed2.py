@@ -18,12 +18,13 @@ def download(url):
         zip.extractall('../lib')
 
 
-load_dotenv(verbose=True)
 os.chdir(os.path.dirname(__file__))
+load_dotenv("../.env", verbose=True)
 
 commit_hash = None
 if len(sys.argv) > 1:
     commit_hash = sys.argv[1]
+    print(commit_hash)
 
 res = requests.get(
     "https://api.github.com/repos/altseed/Altseed2-csharp/actions/artifacts?per_page=1000")
@@ -31,10 +32,12 @@ res = requests.get(
 if commit_hash:
     for artifact in res.json()['artifacts']:
         if artifact['name'] == 'Altseed2-' + commit_hash:
+            print(f'download: {artifact["name"]}')
             download(artifact['archive_download_url'])
-            exit
+            sys.exit()
 
 for artifact in res.json()['artifacts']:
     if 'Altseed2-' in artifact['name']:
+        print(f'download: {artifact["name"]}')
         download(artifact['archive_download_url'])
-        exit
+        sys.exit()

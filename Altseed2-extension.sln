@@ -3,18 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Altseed2-extension", "Altseed2-extension\Altseed2-extension.csproj", "{092E82E1-810D-46BB-9EF5-FF6A4511853E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Altseed2-extension", "Altseed2-extension\Altseed2-extension.csproj", "{092E82E1-810D-46BB-9EF5-FF6A4511853E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{83390046-D59B-4156-BBAF-58B9DE9C57ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Debug|x64.ActiveCfg = Debug|x64
+		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Debug|x64.Build.0 = Debug|x64
+		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Release|x64.ActiveCfg = Release|x64
+		{092E82E1-810D-46BB-9EF5-FF6A4511853E}.Release|x64.Build.0 = Release|x64
+		{83390046-D59B-4156-BBAF-58B9DE9C57ED}.Debug|x64.ActiveCfg = Debug|x64
+		{83390046-D59B-4156-BBAF-58B9DE9C57ED}.Debug|x64.Build.0 = Debug|x64
+		{83390046-D59B-4156-BBAF-58B9DE9C57ED}.Release|x64.ActiveCfg = Release|x64
+		{83390046-D59B-4156-BBAF-58B9DE9C57ED}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
