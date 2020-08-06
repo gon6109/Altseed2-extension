@@ -4,6 +4,8 @@ using NUnit.Framework;
 using Altseed2Extension.Node;
 using Easing = Altseed2Extension.Node.AnimationNode.Animation.Easing;
 using Altseed2;
+using Altseed2Extension.Input;
+using System.Linq;
 
 namespace Test
 {
@@ -82,6 +84,75 @@ namespace Test
             {
                 if (count++ > 200) break;
                 Engine.Update();
+            }
+
+            Engine.Terminate();
+        }
+
+        class RectangleUINode : UINode
+        {
+            PolygonNode Rectangle { get; }
+
+            public RectangleUINode()
+            {
+                Rectangle = new PolygonNode();
+                Rectangle.SetVertexes(new[] {
+                    new Vector2F(0 , 0),
+                    new Vector2F(100, 0),
+                    new Vector2F(100, 50),
+                    new Vector2F(0, 50),
+                }, new Color(200, 200, 200));
+
+                OnChangedFocus += OnChangedFocusRectangleUINode;
+                Size = new Vector2F(100, 50);
+
+                AddChildNode(Rectangle);
+            }
+
+            private void OnChangedFocusRectangleUINode(bool focus)
+            {
+                if (focus)
+                    Rectangle.SetVertexes(new[] {
+                        new Vector2F(0 , 0),
+                        new Vector2F(100, 0),
+                        new Vector2F(100, 50),
+                        new Vector2F(0, 50),
+                    }, new Color(200, 0, 0));
+                else
+                    Rectangle.SetVertexes(new[] {
+                        new Vector2F(0 , 0),
+                        new Vector2F(100, 0),
+                        new Vector2F(100, 50),
+                        new Vector2F(0, 50),
+                    }, new Color(200, 200, 200));
+            }
+
+            public new Vector2F Position { get => base.Position; set => Rectangle.Position = value; }
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        public void UINode()
+        {
+            Engine.Initialize("UINode", 800, 600, new Configuration());
+            Input.InitInput();
+
+            var parent = new UINode();
+
+            for (int i = 0; i < 3; i++)
+            {
+                var child = new RectangleUINode();
+                child.Position = new Vector2F(150 + 150 * i, 300);
+                parent.AddChildNode(child);
+            }
+
+            Engine.AddNode(parent);
+
+            int count = 0;
+            while (Engine.DoEvents())
+            {
+                if (count++ > 200) break;
+                Engine.Update();
+                Input.UpdateInput();
             }
 
             Engine.Terminate();
