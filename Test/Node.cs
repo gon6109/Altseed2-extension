@@ -38,13 +38,9 @@ namespace Test
             scalingCamera.Group = 1;
             Engine.AddNode(scalingCamera);
 
-            var rect = new PolygonNode();
-            rect.SetVertexes(new[] {
-                new Vector2F(0 , 0),
-                new Vector2F(600, 0),
-                new Vector2F(600, 600),
-                new Vector2F(0, 600),
-            }, new Color(255, 0, 0));
+            var rect = new RectangleNode();
+            rect.RectangleSize = new Vector2F(600, 600);
+            rect.Color = new Color(255, 0, 0);
             rect.CameraGroup = 1 << 1;
             Engine.AddNode(rect);
 
@@ -91,17 +87,13 @@ namespace Test
 
         class RectangleUINode : UINode
         {
-            PolygonNode Rectangle { get; }
+            RectangleNode Rectangle { get; }
 
             public RectangleUINode()
             {
-                Rectangle = new PolygonNode();
-                Rectangle.SetVertexes(new[] {
-                    new Vector2F(0 , 0),
-                    new Vector2F(100, 0),
-                    new Vector2F(100, 50),
-                    new Vector2F(0, 50),
-                }, new Color(200, 200, 200));
+                Rectangle = new RectangleNode();
+                Rectangle.RectangleSize = new Vector2F(100, 50);
+                Rectangle.Color = new Color(200, 200, 200);
 
                 OnChangedFocus += OnChangedFocusRectangleUINode;
                 Size = new Vector2F(100, 50);
@@ -112,19 +104,9 @@ namespace Test
             private void OnChangedFocusRectangleUINode(bool focus)
             {
                 if (focus)
-                    Rectangle.SetVertexes(new[] {
-                        new Vector2F(0 , 0),
-                        new Vector2F(100, 0),
-                        new Vector2F(100, 50),
-                        new Vector2F(0, 50),
-                    }, new Color(200, 0, 0));
+                    Rectangle.Color = new Color(200, 0, 0);
                 else
-                    Rectangle.SetVertexes(new[] {
-                        new Vector2F(0 , 0),
-                        new Vector2F(100, 0),
-                        new Vector2F(100, 50),
-                        new Vector2F(0, 50),
-                    }, new Color(200, 200, 200));
+                    Rectangle.Color = new Color(200, 200, 200);
             }
 
             public new Vector2F Position { get => base.Position; set => Rectangle.Position = value; }
