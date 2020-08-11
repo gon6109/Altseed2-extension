@@ -7,11 +7,13 @@ namespace Altseed2Extension.Tool
 {
     public class InputTextToolElement : ToolElement
     {
+        int MaxLength { get; }
         bool IsMultiLine { get; }
 
-        public InputTextToolElement(string name, object source, string propertyName, bool isMultiLine = false) : base(name, source, propertyName)
+        public InputTextToolElement(string name, object source, string propertyName, bool isMultiLine = false, int maxLength = 1024) : base(name, source, propertyName)
         {
             IsMultiLine = isMultiLine;
+            MaxLength = maxLength;
 
             if (!typeof(string).IsAssignableFrom(PropertyInfo?.PropertyType))
             {
@@ -31,12 +33,12 @@ namespace Altseed2Extension.Tool
             string newStr;
             if (IsMultiLine)
             {
-                if ((newStr = Engine.Tool.InputTextMultiline(Name, text, text.Length + 2, new Vector2F(-1, -1), ToolInputTextFlags.None)) != null)
+                if ((newStr = Engine.Tool.InputTextMultiline(Name, text, MaxLength, new Vector2F(-1, -1), ToolInputTextFlags.None)) != null)
                 {
                     PropertyInfo.SetValue(Source, newStr);
                 }
             }
-            else if ((newStr = Engine.Tool.InputText(Name, text, text.Length + 2, ToolInputTextFlags.None)) != null)
+            else if ((newStr = Engine.Tool.InputText(Name, text, MaxLength, ToolInputTextFlags.None)) != null)
             {
                 PropertyInfo.SetValue(Source, newStr);
             }
@@ -45,7 +47,8 @@ namespace Altseed2Extension.Tool
         public static InputTextToolElement Create(object source, ToolElementManager.ObjectMapping objectMapping)
         {
             var isMultiLine = objectMapping.Options.ContainsKey("isMultiLine") ? (bool)objectMapping.Options["isMultiLine"] : false;
-            return new InputTextToolElement(objectMapping.Name, source, objectMapping.PropertyName, isMultiLine);
+            var maxLength = objectMapping.Options.ContainsKey("maxLength") ? (int)objectMapping.Options["maxLength"] : 1024;
+            return new InputTextToolElement(objectMapping.Name, source, objectMapping.PropertyName, isMultiLine, maxLength);
         }
     }
 }

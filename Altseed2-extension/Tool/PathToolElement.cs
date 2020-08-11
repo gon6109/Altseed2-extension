@@ -7,12 +7,14 @@ namespace Altseed2Extension.Tool
 {
     public class PathToolElement : ToolElement
     {
+        int MaxLength { get; }
         public string Filter { get; }
         public string DefaultPath { get; }
         public bool IsDirectory { get; }
 
-        public PathToolElement(string name, object source, string propertyName, bool isDirectory = false, string filter = "", string defaultPath = "") : base(name, source, propertyName)
+        public PathToolElement(string name, object source, string propertyName, bool isDirectory = false, string filter = "", string defaultPath = "", int maxLength = 1024) : base(name, source, propertyName)
         {
+            MaxLength = maxLength;
             Filter = filter;
             DefaultPath = defaultPath;
             IsDirectory = isDirectory;
@@ -31,7 +33,7 @@ namespace Altseed2Extension.Tool
 
             string path = (string)PropertyInfo.GetValue(Source);
             string newPath;
-            if ((newPath = Engine.Tool.InputText(Name, path, path.Length + 2, ToolInputTextFlags.None)) != null)
+            if ((newPath = Engine.Tool.InputText(Name, path, MaxLength, ToolInputTextFlags.None)) != null)
             {
                 PropertyInfo.SetValue(Source, newPath);
             }
@@ -54,7 +56,8 @@ namespace Altseed2Extension.Tool
             var isDirectory = objectMapping.Options.ContainsKey("isDirectory") ? (bool)objectMapping.Options["isDirectory"] : false;
             var filter = objectMapping.Options.ContainsKey("filter") ? (string)objectMapping.Options["filter"] : "";
             var defaultPath = objectMapping.Options.ContainsKey("defaultPath") ? (string)objectMapping.Options["defaultPath"] : "";
-            return new PathToolElement(objectMapping.Name, source, objectMapping.PropertyName, isDirectory, filter, defaultPath);
+            var maxLength = objectMapping.Options.ContainsKey("maxLength") ? (int)objectMapping.Options["maxLength"] : 1024;
+            return new PathToolElement(objectMapping.Name, source, objectMapping.PropertyName, isDirectory, filter, defaultPath, maxLength);
         }
     }
 }

@@ -63,10 +63,27 @@ namespace Altseed2Extension.Tool
 
         public static IEnumerable<ToolElement> CreateToolElements(object source)
         {
-            var type = source.GetType();
-            var objectMappings = new Dictionary<string, ObjectMapping>();
-            while (type.BaseType != null)
+            Dictionary<string, ObjectMapping> GetObjectMappings(Type type)
             {
+                var objectMappings = new Dictionary<string, ObjectMapping>();
+                if (type.BaseType != null)
+                {
+                    var baseMappings = GetObjectMappings(type.BaseType);
+                    foreach (var item in baseMappings)
+                    {
+                        objectMappings[item.Key] = item.Value;
+                    }
+                }
+
+                foreach (var interface_ in type.GetInterfaces())
+                {
+                    var interfaceMappings = GetObjectMappings(type.BaseType);
+                    foreach (var item in interfaceMappings)
+                    {
+                        objectMappings[item.Key] = item.Value;
+                    }
+                }
+
                 if (ToolElementManager.objectMappings.ContainsKey(type))
                 {
                     var temp = ToolElementManager.objectMappings[type].ToDictionary(obj => obj.Name, obj => obj);
@@ -76,8 +93,11 @@ namespace Altseed2Extension.Tool
                         objectMappings[item.Key] = temp[item.Key];
                     }
                 }
-                type = type.BaseType;
+
+                return objectMappings;
             }
+            var type = source.GetType();
+            var objectMappings = GetObjectMappings(type);
 
             List<ToolElement> res = new List<ToolElement>();
             try
@@ -125,7 +145,7 @@ namespace Altseed2Extension.Tool
                         res.Add(toolElement);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Engine.Log.Error(LogCategory.User, e.Message);
                 Engine.Log.Error(LogCategory.User, e.StackTrace);
@@ -146,6 +166,76 @@ namespace Altseed2Extension.Tool
                     new ObjectMapping(ToolElementType.Float, "Angle", "Angle", new Dictionary<string, object>() { {"min", -180f}, {"max", 180f} }),
                     new ObjectMapping(ToolElementType.Bool, "HorizontalFlip", "HorizontalFlip", null),
                     new ObjectMapping(ToolElementType.Bool, "VerticalFlip", "VerticalFlip", null),
+                });
+
+            objectMappings.Add(typeof(TextNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.InputText, "Text", "Text", null),
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Bool, "IsEnableKerning", "IsEnableKerning", null),
+                    new ObjectMapping(ToolElementType.Float, "CharacterSpace", "CharacterSpace", null),
+                    new ObjectMapping(ToolElementType.Float, "Weight", "Weight", null),
+                    new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
+                    new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),
+                });
+
+            objectMappings.Add(typeof(SpriteNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
+                    new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),
+                });
+
+            objectMappings.Add(typeof(ShapeNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
+                    new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),
+                });
+
+            objectMappings.Add(typeof(ArcNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Float, "Radius", "Radius", null),
+                    new ObjectMapping(ToolElementType.Float, "StartDegree", "StartDegree", new Dictionary<string, object>() { { "min", -180f }, {"max", 180f } }),
+                    new ObjectMapping(ToolElementType.Float, "EndDegree", "EndDegree", new Dictionary<string, object>() { { "min", -180f }, {"max", 180f } }),
+                    new ObjectMapping(ToolElementType.Int, "VertNum", "VertNum", new Dictionary<string, object>() { { "min", 3 }, {"max", 500 } }),
+                });
+
+            objectMappings.Add(typeof(CircleNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Float, "Radius", "Radius", null),
+                    new ObjectMapping(ToolElementType.Int, "VertNum", "VertNum", new Dictionary<string, object>() { { "min", 3 }, {"max", 500 } }),
+                });
+
+            objectMappings.Add(typeof(LineNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Float, "Thickness", "Thickness", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "Point1", "Point1", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "Point2", "Point2", null),
+                });
+
+            objectMappings.Add(typeof(RectangleNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "RectangleSize", "RectangleSize", null),
+                });
+
+            objectMappings.Add(typeof(TriangleNode),
+                new List<ObjectMapping>
+                {
+                    new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "Point1", "Point1", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "Point2", "Point2", null),
+                    new ObjectMapping(ToolElementType.Vector2F, "Point3", "Point3", null),
                 });
         }
     }
