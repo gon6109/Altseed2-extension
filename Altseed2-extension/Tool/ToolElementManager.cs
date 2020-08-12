@@ -17,7 +17,8 @@ namespace Altseed2Extension.Tool
         Label,
         List,
         Path,
-        Vector2F
+        Vector2F,
+        TextureBase,
     }
 
     public class ToolElementManager
@@ -137,6 +138,9 @@ namespace Altseed2Extension.Tool
                         case ToolElementType.Float:
                             toolElement = FloatToolElement.Create(source, objectMapping);
                             break;
+                        case ToolElementType.TextureBase:
+                            toolElement = TextureBaseToolElement.Create(source, objectMapping);
+                            break;
                         default:
                             Engine.Log.Error(LogCategory.User, $"{objectMapping.ToolElementType} is not defined.");
                             break;
@@ -183,6 +187,7 @@ namespace Altseed2Extension.Tool
             objectMappings.Add(typeof(SpriteNode),
                 new List<ObjectMapping>
                 {
+                    new ObjectMapping(ToolElementType.TextureBase, "Texture", "Texture", null),
                     new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
                     new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
                     new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),

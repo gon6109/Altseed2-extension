@@ -1,6 +1,7 @@
 ﻿using Altseed2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Altseed2Extension.Editor
@@ -8,8 +9,13 @@ namespace Altseed2Extension.Editor
     public static class Editor
     {
         private static object selected;
+        private static RenderTexture main;
+        private static CameraNode mainCamera;
 
         private static IEnumerable<Tool.ToolElement> selectedToolElements;
+        public static List<TextureBase> TextureBases = new List<TextureBase>();
+
+        internal static Tool.TextureBaseToolElement TextureBrowserTarget { get; set; }
 
         public static object Selected
         {
@@ -33,6 +39,18 @@ namespace Altseed2Extension.Editor
             var res = Engine.Initialize(title, width, height, config);
             Engine.Tool.AddFontFromFileTTF("../TestData/Font/mplus-1m-regular.ttf", 20, ToolGlyphRange.Japanese);
             Tool.ToolElementManager.SetAltseed2DefaultObjectMapping();
+
+            main = RenderTexture.Create(Engine.WindowSize - new Vector2I(600, 18), TextureFormat.R8G8B8A8_UNORM);
+
+            mainCamera = new CameraNode();
+            mainCamera.IsColorCleared = true;
+            mainCamera.ClearColor = new Color(50, 50, 50);
+            mainCamera.Group = 63;
+            mainCamera.TargetTexture = main;
+            Engine.AddNode(mainCamera);
+
+            first = true;
+
             return res;
         }
 
@@ -43,10 +61,60 @@ namespace Altseed2Extension.Editor
 
         public static bool Update()
         {
+            if (first)
+            {
+                if (Engine.Tool.Begin("Texture Browser", ToolWindowFlags.None))
+                {
+                    Engine.Tool.End();
+                }
+                first = false;
+            }
+            
+            foreach (var node in Engine.GetNodes().Union(Engine.GetNodes().SelectMany(obj => obj.EnumerateDescendants())))
+            {
+                try
+                {
+                    node.GetType().GetProperty("CameraGroup").SetValue(node, 1u << 63);
+                }
+                catch { }
+            }
+            
+            UpdateMainWindow();
             UpdateMenu();
             UpdateNodeTreeWindow();
             UpdateSelectedWindow();
+
+            if (TextureBrowserTarget != null)
+                UpdateTextureBrowser();
             return Engine.Update();
+        }
+
+        static Vector2I windowSize = Engine.WindowSize;
+        private static float menuHeight = 20;
+        private static bool first;
+
+        private static void UpdateMainWindow()
+        {
+            if (windowSize != Engine.WindowSize)
+            {
+                main = RenderTexture.Create(Engine.WindowSize - new Vector2I(600, (int)menuHeight), TextureFormat.R8G8B8A8_UNORM);
+                mainCamera.TargetTexture = main;
+                windowSize = Engine.WindowSize;
+            }
+
+            var size = windowSize - new Vector2F(600, menuHeight);
+            var pos = new Vector2F(300, menuHeight);
+            Engine.Tool.SetNextWindowSize(size, ToolCond.None);
+            Engine.Tool.SetNextWindowPos(pos, ToolCond.None);
+            var flags = ToolWindowFlags.NoMove | ToolWindowFlags.NoBringToFrontOnFocus
+                | ToolWindowFlags.NoResize | ToolWindowFlags.NoScrollbar
+                | ToolWindowFlags.NoScrollbar | ToolWindowFlags.NoTitleBar | ToolWindowFlags.NoScrollWithMouse;
+
+            if (Engine.Tool.Begin("Main", flags))
+            {
+                Engine.Tool.Image(main, main.Size, default, new Vector2F(1, 1), new Color(255, 255, 255), new Color());
+                Engine.Tool.End();
+            }
         }
 
         private static void UpdateNodeTreeWindow()
@@ -55,6 +123,8 @@ namespace Altseed2Extension.Editor
             {
                 foreach (var node in nodes)
                 {
+                    if (node == mainCamera) continue;
+
                     Engine.Tool.PushID(node.GetHashCode());
                     var flags = ToolTreeNodeFlags.OpenOnArrow;
                     if (node == Selected)
@@ -77,8 +147,8 @@ namespace Altseed2Extension.Editor
                 }
             }
 
-            var size = new Vector2F(300, Engine.WindowSize.Y - 15);
-            var pos = new Vector2F(0, 15);
+            var size = new Vector2F(300, Engine.WindowSize.Y - menuHeight);
+            var pos = new Vector2F(0, menuHeight);
             Engine.Tool.SetNextWindowSize(size, ToolCond.None);
             Engine.Tool.SetNextWindowPos(pos, ToolCond.None);
             var flags = ToolWindowFlags.NoMove | ToolWindowFlags.NoBringToFrontOnFocus
@@ -106,7 +176,7 @@ namespace Altseed2Extension.Editor
                 Engine.Tool.SameLine();
                 if (Engine.Tool.Button("Triangle"))
                     Engine.AddNode(new TriangleNode() { Point2 = new Vector2F(50, 50), Point3 = new Vector2F(100, 0) });
-               
+
                 NodeTree(Engine.GetNodes());
                 Engine.Tool.End();
             }
@@ -114,8 +184,8 @@ namespace Altseed2Extension.Editor
 
         private static void UpdateSelectedWindow()
         {
-            var size = new Vector2F(300, Engine.WindowSize.Y - 15);
-            var pos = new Vector2F(Engine.WindowSize.X - size.X, 15);
+            var size = new Vector2F(300, Engine.WindowSize.Y - menuHeight);
+            var pos = new Vector2F(Engine.WindowSize.X - size.X, menuHeight);
             Engine.Tool.SetNextWindowSize(size, ToolCond.None);
             Engine.Tool.SetNextWindowPos(pos, ToolCond.None);
             var flags = ToolWindowFlags.NoMove | ToolWindowFlags.NoBringToFrontOnFocus
@@ -156,6 +226,55 @@ namespace Altseed2Extension.Editor
                     Engine.Tool.EndMenu();
                 }
                 Engine.Tool.EndMainMenuBar();
+            }
+            menuHeight = Engine.Tool.GetFrameHeight();
+        }
+
+        static void UpdateTextureBrowser()
+        {
+            if (Engine.Tool.Begin("Texture Browser", ToolWindowFlags.None))
+            {
+                Engine.Tool.PushID("Browser".GetHashCode());
+                if (Engine.Tool.Button("+"))
+                {
+                    string path;
+                    if ((path = Engine.Tool.OpenDialog("png,jpg,jpeg,psd", "")) != null)
+                    {
+                        var newTexture = Texture2D.Load(path);
+                        if (newTexture != null)
+                            TextureBases.Add(newTexture);
+                    }
+                }
+
+                foreach (var item in TextureBases)
+                {
+                    if (Engine.Tool.ImageButton(item,
+                        new Vector2F(80, 80),
+                        new Vector2F(0, 0),
+                        new Vector2F(1, 1),
+                        5,
+                        new Color(),
+                        new Color(255, 255, 255, 255)))
+                    {
+                        if (TextureBrowserTarget != null)
+                            TextureBrowserTarget.PropertyInfo.SetValue(TextureBrowserTarget.Source, item);
+                        TextureBrowserTarget = null;
+                    }
+                }
+
+                if (Engine.Tool.Button("null"))
+                {
+                    TextureBrowserTarget.PropertyInfo.SetValue(TextureBrowserTarget.Source, null);
+                    TextureBrowserTarget = null;
+                }
+
+                Engine.Tool.PopID();
+
+                if (!Engine.Tool.IsWindowFocused(ToolFocused.None))
+                {
+                    TextureBrowserTarget = null;
+                }
+                Engine.Tool.End();
             }
         }
     }
