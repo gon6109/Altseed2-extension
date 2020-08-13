@@ -19,6 +19,7 @@ namespace Altseed2Extension.Tool
         Path,
         Vector2F,
         TextureBase,
+        Font,
     }
 
     public class ToolElementManager
@@ -141,6 +142,9 @@ namespace Altseed2Extension.Tool
                         case ToolElementType.TextureBase:
                             toolElement = TextureBaseToolElement.Create(source, objectMapping);
                             break;
+                        case ToolElementType.Font:
+                            toolElement = FontToolElement.Create(source, objectMapping);
+                            break;
                         default:
                             Engine.Log.Error(LogCategory.User, $"{objectMapping.ToolElementType} is not defined.");
                             break;
@@ -176,6 +180,7 @@ namespace Altseed2Extension.Tool
                 new List<ObjectMapping>
                 {
                     new ObjectMapping(ToolElementType.InputText, "Text", "Text", null),
+                    new ObjectMapping(ToolElementType.Font, "Font", "Font", null),
                     new ObjectMapping(ToolElementType.Color, "Color", "Color", null),
                     new ObjectMapping(ToolElementType.Bool, "IsEnableKerning", "IsEnableKerning", null),
                     new ObjectMapping(ToolElementType.Float, "CharacterSpace", "CharacterSpace", null),
@@ -196,6 +201,7 @@ namespace Altseed2Extension.Tool
             objectMappings.Add(typeof(ShapeNode),
                 new List<ObjectMapping>
                 {
+                    new ObjectMapping(ToolElementType.TextureBase, "Texture", "Texture", null),
                     new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
                     new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),
                 });

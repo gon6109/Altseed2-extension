@@ -14,8 +14,10 @@ namespace Altseed2Extension.Editor
 
         private static IEnumerable<Tool.ToolElement> selectedToolElements;
         public static List<TextureBase> TextureBases = new List<TextureBase>();
+        public static List<Font> Fonts = new List<Font>();
 
         internal static Tool.TextureBaseToolElement TextureBrowserTarget { get; set; }
+        internal static Tool.FontToolElement FontBrowserTarget { get; set; }
 
         public static object Selected
         {
@@ -67,6 +69,10 @@ namespace Altseed2Extension.Editor
                 {
                     Engine.Tool.End();
                 }
+                if (Engine.Tool.Begin("Font Browser", ToolWindowFlags.None))
+                {
+                    Engine.Tool.End();
+                }
                 first = false;
             }
             
@@ -86,6 +92,8 @@ namespace Altseed2Extension.Editor
 
             if (TextureBrowserTarget != null)
                 UpdateTextureBrowser();
+            if (FontBrowserTarget != null)
+                UpdateFontBrowser();
             return Engine.Update();
         }
 
@@ -273,6 +281,62 @@ namespace Altseed2Extension.Editor
                 if (!Engine.Tool.IsWindowFocused(ToolFocused.None))
                 {
                     TextureBrowserTarget = null;
+                }
+                Engine.Tool.End();
+            }
+        }
+
+        static int fontSize = 50;
+        private static void UpdateFontBrowser()
+        {
+            if (Engine.Tool.Begin("Font Browser", ToolWindowFlags.None))
+            {
+                Engine.Tool.PushID("Browser".GetHashCode());
+                
+                Engine.Tool.InputInt("Font Size", ref fontSize);
+                Engine.Tool.SameLine();
+                if (Engine.Tool.Button("+"))
+                {
+                    string path;
+                    if ((path = Engine.Tool.OpenDialog("ttf", "")) != null)
+                    {
+                        var font = Font.LoadDynamicFont(path, fontSize);
+                        font.GetGlyph((int)'a');
+                        font.GetGlyph((int)'あ');
+                        font.GetGlyph((int)'阿');
+                        if (font != null)
+                            Fonts.Add(font);
+                    }
+                }
+
+                foreach (var item in Fonts)
+                {
+                    var glyph = item.GetGlyph((int)'阿');
+                    if (Engine.Tool.ImageButton(item.GetFontTexture(glyph.TextureIndex),
+                        new Vector2I(80, 80),
+                        new Vector2F(0, 0),
+                        (glyph.Position + glyph.Size).To2F() / glyph.TextureSize,
+                        5,
+                        new Color(),
+                        new Color(255, 255, 255, 255)))
+                    {
+                        if (FontBrowserTarget != null)
+                            FontBrowserTarget.PropertyInfo.SetValue(FontBrowserTarget.Source, item);
+                        FontBrowserTarget = null;
+                    }
+                }
+
+                if (Engine.Tool.Button("null"))
+                {
+                    FontBrowserTarget.PropertyInfo.SetValue(FontBrowserTarget.Source, null);
+                    FontBrowserTarget = null;
+                }
+
+                Engine.Tool.PopID();
+
+                if (!Engine.Tool.IsWindowFocused(ToolFocused.None))
+                {
+                    FontBrowserTarget = null;
                 }
                 Engine.Tool.End();
             }
