@@ -20,6 +20,7 @@ namespace Altseed2Extension.Tool
         Vector2F,
         TextureBase,
         Font,
+        Enum,
     }
 
     public class ToolElementManager
@@ -145,6 +146,9 @@ namespace Altseed2Extension.Tool
                         case ToolElementType.Font:
                             toolElement = FontToolElement.Create(source, objectMapping);
                             break;
+                        case ToolElementType.Enum:
+                            toolElement = EnumToolElement.Create(source, objectMapping);
+                            break;
                         default:
                             Engine.Log.Error(LogCategory.User, $"{objectMapping.ToolElementType} is not defined.");
                             break;
@@ -187,6 +191,7 @@ namespace Altseed2Extension.Tool
                     new ObjectMapping(ToolElementType.Float, "Weight", "Weight", null),
                     new ObjectMapping(ToolElementType.Int, "ZOrder", "ZOrder", null),
                     new ObjectMapping(ToolElementType.Bool, "IsDrawn", "IsDrawn", null),
+                    new ObjectMapping(ToolElementType.Enum, "WritingDirection", "WritingDirection", null),
                 });
 
             objectMappings.Add(typeof(SpriteNode),

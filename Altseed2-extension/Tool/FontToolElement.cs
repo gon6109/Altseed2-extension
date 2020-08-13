@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Altseed2Extension.Tool
 {
-    class FontToolElement : ToolElement
+    public class FontToolElement : ToolElement
     {
         public FontToolElement(string name, object source, string propertyName) : base(name, source, propertyName)
         {
