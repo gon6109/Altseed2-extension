@@ -1,5 +1,6 @@
 ﻿using Altseed2;
 using Altseed2Extension.Editor;
+using Altseed2Extension.Tool.Attribute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,13 @@ namespace Test
     [TestFixture]
     class EditorTest
     {
+        [ToolAuto]
+        class TestNode : SpriteNode
+        {
+            public string Label => "Test OutPut";
+            public string Text { get; set; }
+        }
+
         [Test, Apartment(ApartmentState.STA)]
         public void Basic()
         {
@@ -18,7 +26,7 @@ namespace Test
 
             for (int i = 0; i < 5; i++)
             {
-                var sprite = new SpriteNode();
+                var sprite = new TestNode();
                 sprite.Position = new Vector2F(50 + 75 * i, 400);
                 sprite.Texture = Texture2D.Load("../TestData/IO/AltseedPink.png");
                 sprite.CenterPosition = (sprite.Texture?.Size.To2F() ?? default) / 2.0f;

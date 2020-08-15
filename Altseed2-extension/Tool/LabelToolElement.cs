@@ -9,9 +9,9 @@ namespace Altseed2Extension.Tool
     {
         public LabelToolElement(string name, object source, string propertyName) : base(name, source, propertyName)
         {
-            if (!typeof(string).IsAssignableFrom(PropertyInfo?.PropertyType))
+            if (!(PropertyInfo?.CanRead ?? false))
             {
-                throw new ArgumentException("参照先がstring型ではありません");
+                throw new ArgumentException("参照先から読み取れません");
             }
         }
 
@@ -21,7 +21,7 @@ namespace Altseed2Extension.Tool
 
             if (Source == null || PropertyInfo == null) return;
 
-            string text = (string)PropertyInfo.GetValue(Source);
+            string text = PropertyInfo.GetValue(Source)?.ToString() ?? "none";
             Engine.Tool.LabelText(Name, text);
         }
 

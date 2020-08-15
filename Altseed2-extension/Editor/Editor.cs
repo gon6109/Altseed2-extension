@@ -40,6 +40,7 @@ namespace Altseed2Extension.Editor
 
             var res = Engine.Initialize(title, width, height, config);
             Engine.Tool.AddFontFromFileTTF("../TestData/Font/mplus-1m-regular.ttf", 20, ToolGlyphRange.Japanese);
+            Engine.Tool.ToolUsage = ToolUsage.Main;
             Tool.ToolElementManager.SetAltseed2DefaultObjectMapping();
 
             main = RenderTexture.Create(Engine.WindowSize - new Vector2I(600, 18), TextureFormat.R8G8B8A8_UNORM);
@@ -75,7 +76,7 @@ namespace Altseed2Extension.Editor
                 }
                 first = false;
             }
-            
+
             foreach (var node in Engine.GetNodes().Union(Engine.GetNodes().SelectMany(obj => obj.EnumerateDescendants())))
             {
                 try
@@ -84,7 +85,7 @@ namespace Altseed2Extension.Editor
                 }
                 catch { }
             }
-            
+
             UpdateMainWindow();
             UpdateMenu();
             UpdateNodeTreeWindow();
@@ -292,7 +293,7 @@ namespace Altseed2Extension.Editor
             if (Engine.Tool.Begin("Font Browser", ToolWindowFlags.None))
             {
                 Engine.Tool.PushID("Browser".GetHashCode());
-                
+
                 Engine.Tool.InputInt("Font Size", ref fontSize);
                 Engine.Tool.SameLine();
                 if (Engine.Tool.Button("+"))

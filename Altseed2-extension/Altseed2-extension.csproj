@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tool\Attribute\GroupToolAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\lib\Altseed2_Core.dll" Link="Altseed2_Core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
