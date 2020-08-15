@@ -116,7 +116,7 @@ namespace Altseed2Extension.Node
                 }
             }
 
-            float GetEasing(Easing easing, int current, float start, float end, int frame)
+            public float GetEasing(Easing easing, int current, float start, float end, int frame)
             {
                 if (current == 0) return start;
                 if (current == frame) return end;
