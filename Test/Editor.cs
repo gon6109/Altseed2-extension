@@ -26,10 +26,14 @@ namespace Test
 
             public int Selected { get; set; }
 
+            [ToolGroup]
+            public TextNode TextNode { get; set; }
+
             [ToolButton]
             public void Test()
             {
                 Text = "hoge";
+                TextNode = new TextNode();
             }
         }
 
