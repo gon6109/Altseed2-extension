@@ -17,6 +17,12 @@ namespace Test
         {
             public string Label => "Test OutPut";
             public string Text { get; set; }
+
+            [ToolButton]
+            public void Test()
+            {
+                Text = "hoge";
+            }
         }
 
         [Test, Apartment(ApartmentState.STA)]

@@ -24,6 +24,7 @@ namespace Altseed2Extension.Tool
         TextureBase,
         Font,
         Enum,
+        Button,
     }
 
     public class ToolElementManager
@@ -65,6 +66,11 @@ namespace Altseed2Extension.Tool
             }
             ToolElementManager.objectMappings[type] = objectMappings.ToList();
             return true;
+        }
+
+        public static void ClearObjectMappings()
+        {
+            objectMappings.Clear();
         }
 
         public static IEnumerable<ToolElement> CreateToolElements(object source)
@@ -109,40 +115,29 @@ namespace Altseed2Extension.Tool
                         continue;
                     }
 
-                    switch (info.GetValue(source))
+                    if (info.PropertyType == typeof(bool))
+                        res[info.Name] = new Tool.BoolToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(Color))
+                        res[info.Name] = new Tool.ColorToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(Enum))
+                        res[info.Name] = new Tool.EnumToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(float))
+                        res[info.Name] = new Tool.FloatToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(Font))
+                        res[info.Name] = new Tool.FontToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(string))
                     {
-                        case bool _:
-                            res[info.Name] = new Tool.BoolToolElement(info.Name, source, info.Name);
-                            break;
-                        case Color _:
-                            res[info.Name] = new Tool.ColorToolElement(info.Name, source, info.Name);
-                            break;
-                        case Enum _:
-                            res[info.Name] = new Tool.EnumToolElement(info.Name, source, info.Name);
-                            break;
-                        case float _:
-                            res[info.Name] = new Tool.FloatToolElement(info.Name, source, info.Name);
-                            break;
-                        case Font _:
-                            res[info.Name] = new Tool.FontToolElement(info.Name, source, info.Name);
-                            break;
-                        case string _:
-                            if (info.CanWrite)
-                                res[info.Name] = new Tool.InputTextToolElement(info.Name, source, info.Name);
-                            break;
-                        case int _:
-                            res[info.Name] = new Tool.IntToolElement(info.Name, source, info.Name);
-                            break;
-                        case IList _:
-                            res[info.Name] = new Tool.ListToolElement(info.Name, source, info.Name);
-                            break;
-                        case TextureBase _:
-                            res[info.Name] = new Tool.TextureBaseToolElement(info.Name, source, info.Name);
-                            break;
-                        case Vector2F _:
-                            res[info.Name] = new Tool.Vector2FToolElement(info.Name, source, info.Name);
-                            break;
+                        if (info.CanWrite)
+                            res[info.Name] = new Tool.InputTextToolElement(info.Name, source, info.Name);
                     }
+                    else if (info.PropertyType == typeof(int))
+                        res[info.Name] = new Tool.IntToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(IList))
+                        res[info.Name] = new Tool.ListToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(TextureBase))
+                        res[info.Name] = new Tool.TextureBaseToolElement(info.Name, source, info.Name);
+                    else if (info.PropertyType == typeof(Vector2F))
+                        res[info.Name] = new Tool.Vector2FToolElement(info.Name, source, info.Name);
                 }
                 catch (Exception e)
                 {
@@ -205,6 +200,28 @@ namespace Altseed2Extension.Tool
                                 break;
                             case ToolVector2FAttribute toolVector2FAttribute:
                                 res[toolVector2FAttribute.Name ?? info.Name] = new Tool.Vector2FToolElement(toolVector2FAttribute.Name ?? info.Name, source, info.Name, toolVector2FAttribute.Speed, toolVector2FAttribute.Min, toolVector2FAttribute.Max);
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Engine.Log.Error(LogCategory.User, e.Message);
+                        Engine.Log.Error(LogCategory.User, e.StackTrace);
+                    }
+                }
+            }
+
+            foreach (var info in source.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            {
+                System.Attribute[] attributes = System.Attribute.GetCustomAttributes(info, typeof(System.Attribute));
+                foreach (System.Attribute attribute in attributes)
+                {
+                    try
+                    {
+                        switch (attribute)
+                        {
+                            case ToolButtonAttribute toolButtonAttribute:
+                                res[toolButtonAttribute.Name ?? info.Name] = new Tool.ButtonToolElement(toolButtonAttribute.Name ?? info.Name, source, info.Name);
                                 break;
                         }
                     }
@@ -303,6 +320,9 @@ namespace Altseed2Extension.Tool
                             break;
                         case ToolElementType.Enum:
                             toolElement = EnumToolElement.Create(source, objectMapping);
+                            break;
+                        case ToolElementType.Button:
+                            toolElement = ButtonToolElement.Create(source, objectMapping);
                             break;
                         default:
                             Engine.Log.Error(LogCategory.User, $"{objectMapping.ToolElementType} is not defined.");
