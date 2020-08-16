@@ -18,6 +18,14 @@ namespace Test
             public string Label => "Test OutPut";
             public string Text { get; set; }
 
+            [ToolPath(isDirectory: true)]
+            public string Path { get; set; }
+
+            [ToolList(selectedItemPropertyName: "Selected")]
+            public List<int> Hoge { get; set; } = new List<int>() { 1, 2, 3 };
+
+            public int Selected { get; set; }
+
             [ToolButton]
             public void Test()
             {

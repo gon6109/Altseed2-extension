@@ -190,7 +190,7 @@ namespace Altseed2Extension.Tool
                                 res[toolLabelAttribute.Name ?? info.Name] = new Tool.LabelToolElement(toolLabelAttribute.Name ?? info.Name, source, info.Name);
                                 break;
                             case ToolListAttribute toolListAttribute:
-                                res[toolListAttribute.Name ?? info.Name] = new Tool.ListToolElement(toolListAttribute.Name ?? info.Name, source, info.Name, toolListAttribute.ListElementPropertyName, toolListAttribute.AddMethodName, toolListAttribute.RemoveMethodName);
+                                res[toolListAttribute.Name ?? info.Name] = new Tool.ListToolElement(toolListAttribute.Name ?? info.Name, source, info.Name, toolListAttribute.ListElementPropertyName, toolListAttribute.SelectedItemPropertyName, toolListAttribute.AddMethodName, toolListAttribute.RemoveMethodName);
                                 break;
                             case ToolPathAttribute toolPathAttribute:
                                 res[toolPathAttribute.Name ?? info.Name] = new Tool.PathToolElement(toolPathAttribute.Name ?? info.Name, source, info.Name, toolPathAttribute.IsDirectory, toolPathAttribute.Filter, toolPathAttribute.DefaultPath, toolPathAttribute.MaxLength);

@@ -9,13 +9,15 @@ namespace Altseed2Extension.Tool.Attribute
     {
         public string Name { get; }
         public string ListElementPropertyName { get; }
+        public string SelectedItemPropertyName { get; }
         public string AddMethodName { get; }
         public string RemoveMethodName { get; }
 
-        public ToolListAttribute(string name = null, string listElementPropertyName = null, string addMethodName = null, string removeMethodName = null)
+        public ToolListAttribute(string name = null, string listElementPropertyName = null, string selectedItemPropertyName = null, string addMethodName = null, string removeMethodName = null)
         {
             Name = name;
             ListElementPropertyName = listElementPropertyName;
+            SelectedItemPropertyName = selectedItemPropertyName;
             AddMethodName = addMethodName;
             RemoveMethodName = removeMethodName;
         }
