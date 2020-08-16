@@ -17,7 +17,7 @@ namespace Altseed2Extension.Editor
 
         public static Vector2F MousePosition { get; private set; }
 
-        private static CameraNode MainCamera { get; set; }
+        public static CameraNode MainCamera { get; set; }
 
         internal static Tool.TextureBaseToolElement TextureBrowserTarget { get; set; }
         internal static Tool.FontToolElement FontBrowserTarget { get; set; }
