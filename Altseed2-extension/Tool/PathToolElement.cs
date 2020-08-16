@@ -32,6 +32,8 @@ namespace Altseed2Extension.Tool
             if (Source == null || PropertyInfo == null) return;
 
             string path = (string)PropertyInfo.GetValue(Source);
+            if (path == null)
+                path = "";
             string newPath;
             if ((newPath = Engine.Tool.InputText(Name, path, MaxLength, ToolInputTextFlags.None)) != null)
             {
