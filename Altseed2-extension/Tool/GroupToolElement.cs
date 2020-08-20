@@ -31,7 +31,9 @@ namespace Altseed2Extension.Tool
             if ((Target == null && PropertyInfo?.GetValue(Source) != null) ||
                 (Target != null && (!Target.TryGetTarget(out var target) || target != PropertyInfo?.GetValue(Source))))
             {
-                ToolElements = ToolElementManager.CreateToolElements(PropertyInfo?.GetValue(Source)).ToList();
+                object t = PropertyInfo?.GetValue(Source);
+                Target = new WeakReference<object>(t);
+                ToolElements = ToolElementManager.CreateToolElements(t).ToList();
             }
 
             if (Engine.Tool.CollapsingHeader(Name, ToolTreeNodeFlags.CollapsingHeader))
