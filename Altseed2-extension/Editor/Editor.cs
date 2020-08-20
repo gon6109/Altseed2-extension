@@ -17,6 +17,8 @@ namespace Altseed2Extension.Editor
 
         public static Vector2F MousePosition { get; private set; }
 
+        public static bool IsMainWindowFocus { get; private set; }
+
         public static CameraNode MainCamera
         {
             get => mainCamera;
@@ -24,7 +26,7 @@ namespace Altseed2Extension.Editor
             {
                 if (value == mainCamera) return;
                 mainCamera?.Parent?.RemoveChildNode(mainCamera);
-                
+
                 mainCamera = value;
                 if (mainCamera.Status == RegisteredStatus.Free)
                 {
@@ -124,7 +126,9 @@ namespace Altseed2Extension.Editor
         {
             if (windowSize != Engine.WindowSize)
             {
-                main = RenderTexture.Create(Engine.WindowSize - new Vector2I(600, (int)menuHeight), TextureFormat.R8G8B8A8_UNORM);
+                Vector2I texSize = Engine.WindowSize - new Vector2I(600, (int)menuHeight);
+                if (texSize.X > 0 && texSize.Y > 0)
+                    main = RenderTexture.Create(texSize, TextureFormat.R8G8B8A8_UNORM);
                 MainCamera.TargetTexture = main;
                 windowSize = Engine.WindowSize;
             }
@@ -141,6 +145,7 @@ namespace Altseed2Extension.Editor
             Engine.Tool.PushStyleVarFloat(ToolStyleVar.WindowRounding, 0);
             if (Engine.Tool.Begin("Main", flags))
             {
+                IsMainWindowFocus = Engine.Tool.IsWindowFocused(ToolFocused.None);
                 MousePosition = Engine.Mouse.Position - Engine.Tool.GetWindowPos();
                 Engine.Tool.Image(main, main.Size, default, new Vector2F(1, 1), new Color(255, 255, 255), new Color());
                 Engine.Tool.End();
@@ -256,6 +261,7 @@ namespace Altseed2Extension.Editor
                     Engine.Tool.MenuItem("Paste", "", false, true);
                     Engine.Tool.EndMenu();
                 }
+                Engine.Tool.Text(Engine.CurrentFPS.ToString());
                 Engine.Tool.EndMainMenuBar();
             }
             menuHeight = Engine.Tool.GetFrameHeight();
