@@ -84,6 +84,16 @@ namespace Altseed2Extension.Tool
             {
                 throw new ArgumentException("SelectedItemにListの要素を代入することができません");
             }
+
+            if (AddMethodName != null && (AddMethodInfo?.GetParameters().Length != 1 || !typeof(int).IsAssignableFrom(AddMethodInfo?.GetParameters()[0].ParameterType)))
+            {
+                throw new ArgumentException("AddMethodNameはvoid(int)のメソッドを指定してください");
+            }
+
+            if (RemoveMethodName != null && (RemoveMethodInfo?.GetParameters().Length != 1 || !typeof(int).IsAssignableFrom(RemoveMethodInfo?.GetParameters()[0].ParameterType)))
+            {
+                throw new ArgumentException("RemoveMethodNameはvoid(int)のメソッドを指定してください");
+            }
         }
 
         public override void Update()

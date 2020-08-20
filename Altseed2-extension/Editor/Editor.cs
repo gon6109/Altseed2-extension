@@ -17,7 +17,21 @@ namespace Altseed2Extension.Editor
 
         public static Vector2F MousePosition { get; private set; }
 
-        public static CameraNode MainCamera { get; set; }
+        public static CameraNode MainCamera
+        {
+            get => mainCamera;
+            set
+            {
+                if (value == mainCamera) return;
+                mainCamera?.Parent?.RemoveChildNode(mainCamera);
+                
+                mainCamera = value;
+                if (mainCamera.Status == RegisteredStatus.Free)
+                {
+                    Engine.AddNode(mainCamera);
+                }
+            }
+        }
 
         internal static Tool.TextureBaseToolElement TextureBrowserTarget { get; set; }
         internal static Tool.FontToolElement FontBrowserTarget { get; set; }
@@ -84,7 +98,8 @@ namespace Altseed2Extension.Editor
             {
                 try
                 {
-                    node.GetType().GetProperty("CameraGroup").SetValue(node, 1u << 63);
+                    var propertyInfo = node.GetType().GetProperty("CameraGroup");
+                    propertyInfo.SetValue(node, (ulong)propertyInfo.GetValue(node) | 1u << 63);
                 }
                 catch { }
             }
@@ -295,6 +310,8 @@ namespace Altseed2Extension.Editor
         }
 
         static int fontSize = 50;
+        private static CameraNode mainCamera;
+
         private static void UpdateFontBrowser()
         {
             if (Engine.Tool.Begin("Font Browser", ToolWindowFlags.None))
