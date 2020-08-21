@@ -16,12 +16,18 @@
   <ItemGroup>
     <None Include="..\lib\Altseed2_Core.dll" Link="Altseed2_Core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <None Include="..\lib\libAltseed2_Core" Link="libAltseed2_Core">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <None Include="..\lib\libAltseed2_Core.dylib" Link="libAltseed2_Core.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
   </ItemGroup>
   
