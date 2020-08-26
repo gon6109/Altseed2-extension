@@ -57,9 +57,11 @@ namespace Altseed2Extension.Node
                             }
                             break;
                         case SleepAnimationElement sleep:
-                            for (int i = 0; i < sleep.duration; i++)
+                            float current = 0;
+                            while (current < sleep.duration)
                             {
                                 yield return null;
+                                current += Engine.DeltaSecond;
                             }
                             break;
                         case UserAnimationElement user:
