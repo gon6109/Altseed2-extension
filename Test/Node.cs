@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 using Altseed2Extension.Node;
-using Easing = Altseed2Extension.Node.AnimationNode.Animation.Easing;
 using Altseed2;
 using Altseed2Extension.Input;
 using System.Linq;
@@ -70,9 +69,10 @@ namespace Test
             sprite.AddChildNode(animationNode);
 
             var animation = new AnimationNode.Animation();
-            animation.MoveTo(new Vector2F(200, 200), 50, Easing.InBack);
-            animation.RotateTo(360, 15, Easing.InOutSine);
-            animation.ScaleTo(new Vector2F(0.4f, 0.4f), 85, Easing.InCubic);
+            animation
+                .MoveTo(new Vector2F(200, 200), 0.8f, EasingType.InBack)
+                .RotateTo(360, 0.25f, EasingType.InOutSine)
+                .ScaleTo(new Vector2F(0.4f, 0.4f), 1.4f, EasingType.InCubic);
             animationNode.AddAnimation(sprite, animation);
 
             int count = 0;

@@ -12,8 +12,8 @@ namespace Altseed2Extension.Node
             abstract class BaseAnimationElement
             {
                 public bool isRequireFrom;
-                public int frame;
-                public Easing easing;
+                public float duration;
+                public EasingType easing;
             }
 
             List<BaseAnimationElement> animationElements;
@@ -23,7 +23,7 @@ namespace Altseed2Extension.Node
                 animationElements = new List<BaseAnimationElement>();
             }
 
-            public IEnumerator<object> GetAnimationCoroutine(TransformNode transformNode)
+            public IEnumerator<object> GetAnimationCoroutine(Altseed2.Node node)
             {
                 foreach (var item in animationElements)
                 {
@@ -31,7 +31,7 @@ namespace Altseed2Extension.Node
                     {
                         case MoveAnimationElement move:
                             {
-                                var coRutine = GetMoveCoroutine(transformNode, move);
+                                var coRutine = GetMoveCoroutine(node, move);
                                 while (coRutine.MoveNext())
                                 {
                                     yield return null;
@@ -40,7 +40,7 @@ namespace Altseed2Extension.Node
                             break;
                         case ScaleAnimationElement scale:
                             {
-                                var coRutine = GetScaleCoroutine(transformNode, scale);
+                                var coRutine = GetScaleCoroutine(node, scale);
                                 while (coRutine.MoveNext())
                                 {
                                     yield return null;
@@ -49,7 +49,7 @@ namespace Altseed2Extension.Node
                             break;
                         case RotateAnimationElement rotate:
                             {
-                                var coRutine = GetRotateCoroutine(transformNode, rotate);
+                                var coRutine = GetRotateCoroutine(node, rotate);
                                 while (coRutine.MoveNext())
                                 {
                                     yield return null;
@@ -57,14 +57,14 @@ namespace Altseed2Extension.Node
                             }
                             break;
                         case SleepAnimationElement sleep:
-                            for (int i = 0; i < sleep.frame; i++)
+                            for (int i = 0; i < sleep.duration; i++)
                             {
                                 yield return null;
                             }
                             break;
                         case UserAnimationElement user:
                             {
-                                var coroutine = GetUserAnimationCoroutine(transformNode, user);
+                                var coroutine = GetUserAnimationCoroutine(node, user);
                                 while (coroutine.MoveNext())
                                 {
                                     yield return null;
@@ -77,220 +77,123 @@ namespace Altseed2Extension.Node
                 }
             }
 
-            IEnumerator<object> GetMoveCoroutine(TransformNode transformNode, MoveAnimationElement move)
+            IEnumerator<object> GetMoveCoroutine(Altseed2.Node node, MoveAnimationElement move)
             {
-                Vector2F start = move.isRequireFrom ? move.from : transformNode.Position;
-                for (int i = 1; i <= move.frame; i++)
+                if (node is TransformNode transformNode)
                 {
-                    transformNode.Position = new Vector2F(GetEasing(move.easing, i, start.X, move.to.X, move.frame), GetEasing(move.easing, i, start.Y, move.to.Y, move.frame));
+                    Vector2F start = move.isRequireFrom ? move.from : transformNode.Position;
+                    float current = 0;
+                    while (current < move.duration)
+                    {
+                        transformNode.Position = new Vector2F(GetEasing(move.easing, move.duration, start.X, move.to.X, current), GetEasing(move.easing, move.duration, start.Y, move.to.Y, current));
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+                else if (node is AnchorTransformerNode anchorTransformerNode)
+                {
+                    Vector2F start = move.isRequireFrom ? move.from : anchorTransformerNode.Position;
+                    float current = 0;
+                    while (current < move.duration)
+                    {
+                        anchorTransformerNode.Position = new Vector2F(GetEasing(move.easing, move.duration, start.X, move.to.X, current), GetEasing(move.easing, move.duration, start.Y, move.to.Y, current));
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+            }
+
+
+            IEnumerator<object> GetScaleCoroutine(Altseed2.Node node, ScaleAnimationElement scale)
+            {
+                if (node is TransformNode transformNode)
+                {
+                    Vector2F start = scale.isRequireFrom ? scale.from : transformNode.Scale;
+                    float current = 0;
+                    while (current < scale.duration)
+                    {
+                        transformNode.Scale = new Vector2F(GetEasing(scale.easing, scale.duration, start.X, scale.to.X, current), GetEasing(scale.easing, scale.duration, start.Y, scale.to.Y, current));
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+                else if (node is AnchorTransformerNode anchorTransformerNode)
+                {
+                    Vector2F start = scale.isRequireFrom ? scale.from : anchorTransformerNode.Scale;
+                    float current = 0;
+                    while (current < scale.duration)
+                    {
+                        anchorTransformerNode.Scale = new Vector2F(GetEasing(scale.easing, scale.duration, start.X, scale.to.X, current), GetEasing(scale.easing, scale.duration, start.Y, scale.to.Y, current));
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+            }
+
+            IEnumerator<object> GetRotateCoroutine(Altseed2.Node node, RotateAnimationElement rotate)
+            {
+                if (node is TransformNode transformNode)
+                {
+                    float start = rotate.isRequireFrom ? rotate.from : transformNode.Angle;
+                    float current = 0;
+                    while (current < rotate.duration)
+                    {
+                        transformNode.Angle = GetEasing(rotate.easing, rotate.duration, start, rotate.to, current);
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+                else if (node is AnchorTransformerNode anchorTransformerNode)
+                {
+                    float start = rotate.isRequireFrom ? rotate.from : anchorTransformerNode.Angle;
+                    float current = 0;
+                    while (current < rotate.duration)
+                    {
+                        anchorTransformerNode.Angle = GetEasing(rotate.easing, rotate.duration, start, rotate.to, current);
+                        yield return null;
+                        current += Engine.DeltaSecond;
+                    }
+                }
+            }
+
+            IEnumerator<object> GetUserAnimationCoroutine(Altseed2.Node node, UserAnimationElement userAnimation)
+            {
+                float current = 0;
+                while (current < userAnimation.duration)
+                {
+                    userAnimation.easingFunc(userAnimation.easing, current, userAnimation.duration, node);
                     yield return null;
+                    current += Engine.DeltaSecond;
                 }
             }
 
-            IEnumerator<object> GetScaleCoroutine(TransformNode transformNode, ScaleAnimationElement scale)
-            {
-                Vector2F start = scale.isRequireFrom ? scale.from : transformNode.Scale;
-                for (int i = 1; i <= scale.frame; i++)
-                {
-                    transformNode.Scale = new Vector2F(GetEasing(scale.easing, i, start.X, scale.to.X, scale.frame), GetEasing(scale.easing, i, start.Y, scale.to.Y, scale.frame));
-                    yield return null;
-                }
-            }
-
-            IEnumerator<object> GetRotateCoroutine(TransformNode transformNode, RotateAnimationElement rotate)
-            {
-                float start = rotate.isRequireFrom ? rotate.from : transformNode.Angle;
-                for (int i = 1; i <= rotate.frame; i++)
-                {
-                    transformNode.Angle = GetEasing(rotate.easing, i, start, rotate.to, rotate.frame);
-                    yield return null;
-                }
-            }
-
-            IEnumerator<object> GetUserAnimationCoroutine(TransformNode transformNode, UserAnimationElement userAnimation)
-            {
-                for (int i = 1; i <= userAnimation.frame; i++)
-                {
-                    userAnimation.easingFunc(userAnimation.easing, i, userAnimation.frame, transformNode);
-                    yield return null;
-                }
-            }
-
-            public float GetEasing(Easing easing, int current, float start, float end, int frame)
-            {
-                if (current == 0) return start;
-                if (current == frame) return end;
-
-                float t = (float)current / frame;
-                if (current > frame) t = 1;
-                else if (current < 0) t = 0;
-
-                float d = end - start;
-
-                switch (easing)
-                {
-                    case Easing.Linear:
-                        return start + d * t;
-                    case Easing.InSine:
-                        return -d * (float)Math.Cos(t * MathHelper.DegreeToRadian(90)) + d + start;
-                    case Easing.OutSine:
-                        return d * (float)Math.Sin(t * MathHelper.DegreeToRadian(90)) + start;
-                    case Easing.InOutSine:
-                        return -d / 2 * ((float)Math.Cos(t * Math.PI) - 1) + start;
-                    case Easing.InQuad:
-                        return d * t * t + start;
-                    case Easing.OutQuad:
-                        return d * t * (2 - t) + start;
-                    case Easing.InOutQuad:
-                        return d * (t < 0.5 ? 2 * t * t : t * (4 - 2 * t) - 1) + start;
-                    case Easing.InCubic:
-                        return d * t * t * t + start;
-                    case Easing.OutCubic:
-                        return d * (--t * t * t + 1) + start;
-                    case Easing.InOutCubic:
-                        return d * (t < 0.5f ? 4 * t * t * t : 1 + (--t) * (2 * t) * (2 * t)) + start;
-                    case Easing.InQuart:
-                        return d * t * t * t * t + start;
-                    case Easing.OutQuart:
-                        return -d * (--t * t * t * t - 1) + start;
-                    case Easing.InOutQuart:
-                        if (t < 0.5)
-                        {
-                            t *= t;
-                            return d * 8 * t * t + start;
-                        }
-                        else
-                        {
-                            t = (--t) * t;
-                            return d * (1 - 8 * t * t) + start;
-                        }
-                    case Easing.InQuint:
-                        return d * t * t * t * t * t + start;
-                    case Easing.OutQuint:
-                        return d * (--t * t * t * t * t + 1) + start;
-                    case Easing.InOutQuint:
-                        {
-                            float t2;
-                            if (t < 0.5)
-                            {
-                                t2 = t * t;
-                                return d * 16 * t * t2 * t2 + start;
-                            }
-                            else
-                            {
-                                t2 = (--t) * t;
-                                return d * (1 + 16 * t * t2 * t2) + start;
-                            }
-                        }
-                    case Easing.InExpo:
-                        return t == 0.0f ? start : d * (float)Math.Pow(2, 10 * (t - 1)) + start;
-                    case Easing.OutExpo:
-                        return t == 1 ? d + start : d * (-(float)Math.Pow(2, -10 * t) + 1) + start;
-                    case Easing.InOutExpo:
-                        if (t == 0.0)
-                            return start;
-                        if (t == end)
-                            return end;
-                        if (t < 0.5)
-                        {
-                            return d * ((float)Math.Pow(2, 16 * t) - 1) / 510 + start;
-                        }
-                        else
-                        {
-                            return d * (1 - 0.5f * (float)Math.Pow(2, -16 * (t - 0.5))) + start;
-                        }
-                    case Easing.InCirc:
-                        return d * (1 - (float)Math.Sqrt(1 - t)) + start;
-                    case Easing.OutCirc:
-                        return d * (float)Math.Sqrt(t) + start;
-                    case Easing.InOutCirc:
-                        if (t < 0.5)
-                        {
-                            return d * (1 - (float)Math.Sqrt(1 - 2 * t)) * 0.5f + start;
-                        }
-                        else
-                        {
-                            return d * (1 + (float)Math.Sqrt(2 * t - 1)) * 0.5f + start;
-                        }
-                    case Easing.InBack:
-                        return d * t * t * (2.70158f * t - 1.70158f) + start;
-                    case Easing.OutBack:
-                        return d * (1 + (--t) * t * (2.70158f * t + 1.70158f)) + start;
-                    case Easing.InOutBack:
-                        if (t < 0.5)
-                        {
-                            return d * t * t * (7 * t - 2.5f) * 2 + start;
-                        }
-                        else
-                        {
-                            return d * (1 + (--t) * t * 2 * (7 * t + 2.5f)) + start;
-                        }
-                    case Easing.InElastic:
-                        return d * t * t * t * t * (float)Math.Sin(t * Math.PI * 4.5) + start;
-                    case Easing.OutElastic:
-                        {
-                            float t2 = (t - 1) * (t - 1);
-                            return d * (1 - t2 * t2 * (float)Math.Cos(t * Math.PI * 4.5)) + start;
-                        }
-                    case Easing.InOutElastic:
-                        {
-                            float t2;
-                            if (t < 0.45)
-                            {
-                                t2 = t * t;
-                                return d * 8 * t2 * t2 * (float)Math.Sin(t * Math.PI * 9) + start;
-                            }
-                            else if (t < 0.55)
-                            {
-                                return d * (0.5f + 0.75f * (float)Math.Sin(t * Math.PI * 4)) + start;
-                            }
-                            else
-                            {
-                                t2 = (t - 1) * (t - 1);
-                                return d * (1 - 8 * t2 * t2 * (float)Math.Sin(t * Math.PI * 9)) + start;
-                            }
-                        }
-                    case Easing.InBounce:
-                        return d * (float)Math.Pow(2, 6 * (t - 1)) * Math.Abs((float)Math.Sin(t * Math.PI * 3.5)) + start;
-                    case Easing.OutBounce:
-                        return d * (1 - (float)Math.Pow(2, -6 * t) * Math.Abs((float)Math.Cos(t * (float)Math.PI * 3.5))) + start;
-                    case Easing.InOutBounce:
-                        if (t < 0.5)
-                        {
-                            return d * 8 * (float)Math.Pow(2, 8 * (t - 1)) * Math.Abs((float)Math.Sin(t * (float)Math.PI * 7)) + start;
-                        }
-                        else
-                        {
-                            return d * (1 - 8 * (float)Math.Pow(2, -8 * t) * Math.Abs((float)Math.Sin(t * (float)Math.PI * 7))) + start;
-                        }
-                    default:
-                        return 0;
-                }
-            }
-
-            public void Move(Vector2F from, Vector2F to, int frame, Easing easing = Easing.Linear)
+            public Animation Move(Vector2F from, Vector2F to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new MoveAnimationElement
                 {
                     from = from,
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = true
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
-            public void MoveTo(Vector2F to, int frame, Easing easing = Easing.Linear)
+            public Animation MoveTo(Vector2F to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new MoveAnimationElement
                 {
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = false
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
             class MoveAnimationElement : BaseAnimationElement
@@ -299,29 +202,33 @@ namespace Altseed2Extension.Node
                 public Vector2F from;
             }
 
-            public void Scale(Vector2F from, Vector2F to, int frame, Easing easing = Easing.Linear)
+            public Animation Scale(Vector2F from, Vector2F to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new ScaleAnimationElement
                 {
                     from = from,
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = true
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
-            public void ScaleTo(Vector2F to, int frame, Easing easing = Easing.Linear)
+            public Animation ScaleTo(Vector2F to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new ScaleAnimationElement
                 {
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = false
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
             class ScaleAnimationElement : BaseAnimationElement
@@ -330,29 +237,33 @@ namespace Altseed2Extension.Node
                 public Vector2F from;
             }
 
-            public void Rotate(float from, float to, int frame, Easing easing = Easing.Linear)
+            public Animation Rotate(float from, float to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new RotateAnimationElement
                 {
                     from = from,
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = true
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
-            public void RotateTo(float to, int frame, Easing easing = Easing.Linear)
+            public Animation RotateTo(float to, float duration, EasingType easing = EasingType.Linear)
             {
                 var element = new RotateAnimationElement
                 {
                     to = to,
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = false
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
             class RotateAnimationElement : BaseAnimationElement
@@ -361,71 +272,42 @@ namespace Altseed2Extension.Node
                 public float from;
             }
 
-            public void AnimateUserFunc(int frame, Action<Easing, int, int, TransformNode> easingFunc, Easing easing = Easing.Linear)
+            public Animation AnimateUserFunc(float duration, Action<EasingType, float, float, Altseed2.Node> easingFunc, EasingType easing = EasingType.Linear)
             {
                 var element = new UserAnimationElement
                 {
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     easing = easing,
                     isRequireFrom = false,
                     easingFunc = easingFunc
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
             class UserAnimationElement : BaseAnimationElement
             {
-                public Action<Easing, int, int, TransformNode> easingFunc;
+                public Action<EasingType, float, float, Altseed2.Node> easingFunc;
             }
 
-            public void Sleep(int frame)
+            public Animation Sleep(float duration)
             {
                 var element = new SleepAnimationElement
                 {
-                    frame = frame > 0 ? frame : 1,
+                    duration = duration > 0 ? duration : 1,
                     isRequireFrom = false
                 };
                 animationElements.Add(element);
+
+                return this;
             }
 
             class SleepAnimationElement : BaseAnimationElement
             {
             }
 
-            public enum Easing
-            {
-                Linear,
-                InSine,
-                OutSine,
-                InOutSine,
-                InQuad,
-                OutQuad,
-                InOutQuad,
-                InCubic,
-                OutCubic,
-                InOutCubic,
-                InQuart,
-                OutQuart,
-                InOutQuart,
-                InQuint,
-                OutQuint,
-                InOutQuint,
-                InExpo,
-                OutExpo,
-                InOutExpo,
-                InCirc,
-                OutCirc,
-                InOutCirc,
-                InBack,
-                OutBack,
-                InOutBack,
-                InElastic,
-                OutElastic,
-                InOutElastic,
-                InBounce,
-                OutBounce,
-                InOutBounce,
-            }
+            public static float GetEasing(EasingType easing, float duration, float start, float end, float current) => Easing.GetEasing(easing, current / duration) * (end - start) + start;
         }
     }
 }
