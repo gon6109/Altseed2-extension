@@ -354,6 +354,5 @@ MigrationBackup/
 
 .vscode/
 Build/
-lib/*
-!lib/.gitkeep
 .env
+lib/altseed2.zip
