@@ -90,7 +90,14 @@ namespace Altseed2Extension.Node
         /// <summary>
         /// UIの基準座標
         /// </summary>
-        public Vector2F Position => Drawn?.Position ?? default;
+        public Vector2F Position
+        {
+            get
+            {
+                var vector3 = Drawn?.AbsoluteTransform.Transform3D(new Vector3F()) ?? default;
+                return new Vector2F(vector3.X, vector3.Y);
+            }
+        }
 
         TransformNode Drawn => Children.OfType<TransformNode>().FirstOrDefault();
 
