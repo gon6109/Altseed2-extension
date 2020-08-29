@@ -43,9 +43,9 @@ namespace Altseed2Extension.Node
         /// <param name="object2D">アニメーションするオブジェクト</param>
         /// <param name="animation">アニメーション</param>
         /// <param name="slot">スロット</param>
-        public void AddAnimation(TransformNode transformNode, Animation animation, int slot = 0)
+        public void AddAnimation(Altseed2.Node node, Animation animation, int slot = 0)
         {
-            animations[slot] = animation.GetAnimationCoroutine(transformNode);
+            animations[slot] = animation.GetAnimationCoroutine(node);
         }
     }
 }
