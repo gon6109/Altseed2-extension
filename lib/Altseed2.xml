@@ -1619,9 +1619,9 @@
             垂直同期信号を待つかどうかを取得または設定します。
             </summary>
         </member>
-        <member name="P:Altseed2.Configuration.IsGraphicsOnly">
+        <member name="P:Altseed2.Configuration.EnabledCoreModules">
             <summary>
-            IO・描画機能以外の機能を無効にします。
+            初期化するモジュールを指定します。
             </summary>
         </member>
         <member name="P:Altseed2.Configuration.ConsoleLoggingEnabled">
@@ -1637,11 +1637,6 @@
         <member name="P:Altseed2.Configuration.LogFileName">
             <summary>
             ログファイル名を取得または設定します。
-            </summary>
-        </member>
-        <member name="P:Altseed2.Configuration.ToolEnabled">
-            <summary>
-            ツール機能を使用するかどうかを取得または設定します。
             </summary>
         </member>
         <member name="M:Altseed2.Configuration.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
@@ -6514,73 +6509,73 @@
             <summary>
             ファイルを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">File機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Keyboard">
             <summary>
             キーボードを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Keyboard機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Mouse">
             <summary>
             マウスを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Mouse機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Joystick">
             <summary>
             ジョイスティックを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Joystick機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Graphics">
             <summary>
             グラフィックのクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Log">
             <summary>
             ログを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Log機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Renderer">
             <summary>
             レンダラのクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Rendererが初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.CullingSystem">
             <summary>
             カリングのクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">CullingSystemが初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Sound">
             <summary>
             音を管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Sound機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Resources">
             <summary>
             リソースを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">File機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Window">
             <summary>
             ウインドウを表すクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Windowが初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="P:Altseed2.Engine.Tool">
             <summary>
             ツールを管理するクラスを取得します。
             </summary>
-            <exception cref="T:System.InvalidOperationException">エンジンが初期されていなかったり終了していて操作を実行できなかった</exception>
+            <exception cref="T:System.InvalidOperationException">Tool機能が初期されていなかったり終了していて操作を実行できなかった</exception>
         </member>
         <member name="M:Altseed2.Engine.GetNodes">
             <summary>
@@ -6675,7 +6670,7 @@
             キャッシュの制御を行うクラス
             </summary>
         </member>
-        <member name="M:Altseed2.CacheHelper.CacheHandling``1(``0,System.IntPtr)">
+        <member name="M:Altseed2.CacheHelper.CacheHandlingOnDeserialization``1(``0,System.IntPtr)">
             <summary>
             キャッシュ制御を行います。
             </summary>
@@ -6683,8 +6678,9 @@
             <param name="obj">キャッシュ制御を行うクラスのインスタンス</param>
             <param name="native"><paramref name="obj"/>に登録するポインタ</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="obj"/>または<paramref name="native"/>がnull</exception>
+            <remarks>デシリアライズ時に実行</remarks>
         </member>
-        <member name="M:Altseed2.CacheHelper.CacheHandlingConcurrent``1(``0,System.IntPtr)">
+        <member name="M:Altseed2.CacheHelper.CacheHandlingOnDeserializationConcurrent``1(``0,System.IntPtr)">
             <summary>
             キャッシュ制御をスレッドセーフに行う
             </summary>
@@ -6693,6 +6689,7 @@
             <param name="native"><paramref name="obj"/>に登録するポインタ</param>
             <exception cref="T:System.ArgumentException">スレッドセーフなキャッシュ保存ディクショナリを取得できなかった</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="obj"/>または<paramref name="native"/>がnull</exception>
+            <remarks>デシリアライズ時に実行</remarks>
         </member>
         <member name="M:Altseed2.IOHelper.CheckLoadPath(System.String)">
             <summary>
@@ -9254,6 +9251,7 @@
             <summary>
             <see cref="T:Altseed2.CameraNode"/>新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="P:Altseed2.CameraNode.Angle">
             <summary>
@@ -9557,6 +9555,7 @@
             <paramref name="colliderNode"/>の型がサポートされていない型である
             (<see cref="T:Altseed2.CircleColliderNode"/>，<see cref="T:Altseed2.PolygonColliderNode"/>，<see cref="T:Altseed2.RectangleColliderNode"/>若しくはそれらから派生した型ではない)
             </exception>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="colliderNode"/>がnull</exception>
             <returns><paramref name="colliderNode"/>の当たり領域を表示するノード</returns>
         </member>
@@ -9647,6 +9646,7 @@
             <summary>
             <see cref="T:Altseed2.PolygonNode"/>の新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="P:Altseed2.PolygonNode.Altseed2#ICullableDrawn#CullingId">
             <summary>
@@ -9852,6 +9852,7 @@
             <summary>
             <see cref="T:Altseed2.PostEffectNode"/>の新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="M:Altseed2.PostEffectNode.Draw(Altseed2.RenderTexture,Altseed2.Color)">
             <summary>
@@ -9993,6 +9994,7 @@
             <summary>
             <see cref="T:Altseed2.ShapeNode"/>の新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="P:Altseed2.ShapeNode.Altseed2#ICullableDrawn#CullingId">
             <summary>
@@ -10103,6 +10105,7 @@
             <summary>
             <see cref="T:Altseed2.SpriteNode"/>の新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="P:Altseed2.SpriteNode.Altseed2#ICullableDrawn#CullingId">
             <summary>
@@ -10169,6 +10172,7 @@
             <summary>
             新しいインスタンスを生成します。
             </summary>
+            <exception cref="T:System.InvalidOperationException">Graphics機能が初期化されていない。</exception>
         </member>
         <member name="P:Altseed2.TextNode.Altseed2#ICullableDrawn#CullingId">
             <summary>
@@ -10391,18 +10395,12 @@
         </member>
         <member name="M:Altseed2.RuledTransitionNode.#ctor(Altseed2.RuledTransitionState,Altseed2.RuledTransitionState,Altseed2.Texture2D)">
             <summary>
-            指定したマスクテクスチャを用いて<see cref="T:Altseed2.RuledTransitionNode"/>の新しいインスタンスを生成します。
+            <see cref="T:Altseed2.RuledTransitionNode"/>の新しいインスタンスを生成します。
             </summary>
             <param name="closingState">遷移元のノードにおける<see cref="T:Altseed2.RuledTransitionState"/>のインスタンス</param>
             <param name="openingState">遷移先のノードにおける<see cref="T:Altseed2.RuledTransitionState"/>のインスタンス</param>
-            <param name="maskTexture">使用するマスクテクスチャ</param>
-        </member>
-        <member name="M:Altseed2.RuledTransitionNode.#ctor(Altseed2.RuledTransitionState,Altseed2.RuledTransitionState)">
-            <summary>
-            既定のマスクテクスチャを用いて<see cref="T:Altseed2.RuledTransitionNode"/>の新しいインスタンスを生成します。
-            </summary>
-            <param name="closingState">遷移元のノードにおける<see cref="T:Altseed2.RuledTransitionState"/>のインスタンス</param>
-            <param name="openingState">遷移先のノードにおける<see cref="T:Altseed2.RuledTransitionState"/>のインスタンス</param>
+            <param name="maskTexture">指定するマスクテクスチャ</param>
+            
         </member>
         <member name="T:Altseed2.TransitionNode">
             <summary>

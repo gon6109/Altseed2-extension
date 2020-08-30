@@ -55,7 +55,7 @@ namespace Altseed2Extension.Editor
         {
             if (config == null)
                 config = new Configuration();
-            config.ToolEnabled = true;
+            config.EnabledCoreModules |= CoreModules.Tool;
 
             var res = Engine.Initialize(title, width, height, config);
             Engine.Tool.AddFontFromFileTTF("../TestData/Font/mplus-1m-regular.ttf", 20, ToolGlyphRange.Japanese);
