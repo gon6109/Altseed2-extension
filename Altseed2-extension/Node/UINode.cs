@@ -62,7 +62,19 @@ namespace Altseed2Extension.Node
         /// <summary>
         /// 要素のサイズ
         /// </summary>
-        public Vector2F Size { get; set; }
+        public Vector2F Size
+        {
+            get
+            {
+                if (Parent is TransformNode transform)
+                {
+                    var vector3
+                        = transform.AbsoluteTransform.Transform3D(new Vector3F(transform.ContentSize.X, transform.ContentSize.Y, 0)) - transform.AbsoluteTransform.Transform3D(new Vector3F());
+                    return new Vector2F(vector3.X, vector3.Y);
+                }
+                return default;
+            }
+        }
 
         /// <summary>
         /// フォーカス変更時のイベント
@@ -81,8 +93,8 @@ namespace Altseed2Extension.Node
         {
             get
             {
-                if (Parent is UINode uiNode)
-                    return uiNode.IsMoveFocus && IsEnable && IsFocused && GetIsSelectedFunc();
+                if (Manager != null)
+                    return Manager.IsMoveFocus && IsEnable && IsFocused && GetIsSelectedFunc();
                 return false;
             }
         }
@@ -94,12 +106,14 @@ namespace Altseed2Extension.Node
         {
             get
             {
-                var vector3 = Drawn?.AbsoluteTransform.Transform3D(new Vector3F()) ?? default;
-                return new Vector2F(vector3.X, vector3.Y);
+                if (Parent is TransformNode transform)
+                {
+                    var vector3 = transform.AbsoluteTransform.Transform3D(new Vector3F());
+                    return new Vector2F(vector3.X, vector3.Y);
+                }
+                return default;
             }
         }
-
-        TransformNode Drawn => Children.OfType<TransformNode>().FirstOrDefault();
 
         /// <summary>
         /// 選択条件
@@ -130,17 +144,37 @@ namespace Altseed2Extension.Node
 
         public bool IsMoveFocus { get; set; }
 
+        public UINode Manager => EnumerateAncestors().OfType<UINode>().FirstOrDefault();
+
+        public IEnumerable<UINode> UINodeChildren => GetUINodeChildren(this);
+
+        private IEnumerable<UINode> GetUINodeChildren(Altseed2.Node node)
+        {
+            if (node == null) yield break;
+
+            var uiNode = node.Children.OfType<UINode>().FirstOrDefault();
+            if (uiNode != null)
+            {
+                yield return uiNode;
+            }
+            else
+            {
+                foreach (var ui in node.Children.SelectMany(obj => GetUINodeChildren(obj)))
+                {
+                    yield return ui;
+                }
+            }
+        }
+
         public UINode()
         {
             IsMoveFocus = true;
             IsEnable = true;
-            first = true;
         }
 
         protected override void OnAdded()
         {
             base.OnAdded();
-            ConnectUINodes();
         }
 
         /// <summary>
@@ -160,7 +194,7 @@ namespace Altseed2Extension.Node
         /// </summary>
         public void ConnectUINodes()
         {
-            var uiChildren = Children.OfType<UINode>().ToList();
+            var uiChildren = UINodeChildren.ToList();
 
             foreach (var item in uiChildren)
             {
@@ -215,12 +249,6 @@ namespace Altseed2Extension.Node
 
         protected override void OnUpdate()
         {
-            if (first && Children.OfType<UINode>().Count() > 0)
-            {
-                ConnectUINodes();
-                first = false;
-            }
-
             if (IsMoveFocus && FocusedUINode != null)
             {
                 if (GetIsPushedUpFunc()) FocusedUINode = FocusedUINode.Up ?? FocusedUINode;
@@ -250,6 +278,5 @@ namespace Altseed2Extension.Node
         /// 右押下判定
         /// </summary>
         public static Func<bool> GetIsPushedRightFunc = delegate { return Input.Input.GetInputState(Inputs.Right) == 1; };
-        private bool first;
     }
 }
