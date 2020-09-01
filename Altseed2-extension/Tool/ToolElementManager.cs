@@ -193,7 +193,7 @@ namespace Altseed2Extension.Tool
                                 res[toolListAttribute.Name ?? info.Name] = new Tool.ListToolElement(toolListAttribute.Name ?? info.Name, source, info.Name, toolListAttribute.ListElementPropertyName, toolListAttribute.SelectedItemPropertyName, toolListAttribute.AddMethodName, toolListAttribute.RemoveMethodName);
                                 break;
                             case ToolPathAttribute toolPathAttribute:
-                                res[toolPathAttribute.Name ?? info.Name] = new Tool.PathToolElement(toolPathAttribute.Name ?? info.Name, source, info.Name, toolPathAttribute.IsDirectory, toolPathAttribute.Filter, toolPathAttribute.DefaultPath, toolPathAttribute.MaxLength);
+                                res[toolPathAttribute.Name ?? info.Name] = new Tool.PathToolElement(toolPathAttribute.Name ?? info.Name, source, info.Name, toolPathAttribute.IsDirectory, toolPathAttribute.Filter, toolPathAttribute.DefaultPath, toolPathAttribute.MaxLength, toolPathAttribute.RootDirectoryPathPropertyName);
                                 break;
                             case ToolTextureBaseAttribute toolTextureBaseAttribute:
                                 res[toolTextureBaseAttribute.Name ?? info.Name] = new Tool.TextureBaseToolElement(toolTextureBaseAttribute.Name ?? info.Name, source, info.Name);

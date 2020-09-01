@@ -122,11 +122,12 @@ namespace Altseed2Extension.Tool
             if (AddMethodInfo != null && Engine.Tool.SmallButton("+"))
             {
                 AddMethodInfo?.Invoke(Source, new object[] { Current });
+                if (RemoveMethodInfo != null)
+                    Engine.Tool.SameLine();
             }
 
             if (RemoveMethodInfo != null)
             {
-                Engine.Tool.SameLine();
                 if (Engine.Tool.SmallButton("-"))
                 {
                     RemoveMethodInfo?.Invoke(Source, new object[] { Current });

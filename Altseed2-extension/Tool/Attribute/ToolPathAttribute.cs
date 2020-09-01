@@ -12,14 +12,16 @@ namespace Altseed2Extension.Tool.Attribute
         public string Filter { get; }
         public string DefaultPath { get; }
         public bool IsDirectory { get; }
+        public string RootDirectoryPathPropertyName { get; }
 
-        public ToolPathAttribute(string name = null, bool isDirectory = false, string filter = "", string defaultPath = "", int maxLength = 1024)
+        public ToolPathAttribute(string name = null, bool isDirectory = false, string filter = "", string defaultPath = "", int maxLength = 1024, string rootDirectoryPathPropertyName = null)
         {
             Name = name;
             MaxLength = maxLength;
             Filter = filter;
             DefaultPath = defaultPath;
             IsDirectory = isDirectory;
+            RootDirectoryPathPropertyName = rootDirectoryPathPropertyName;
         }
     }
 }

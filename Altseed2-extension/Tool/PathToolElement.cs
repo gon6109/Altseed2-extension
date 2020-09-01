@@ -1,6 +1,7 @@
 ﻿using Altseed2;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Altseed2Extension.Tool
@@ -12,14 +13,37 @@ namespace Altseed2Extension.Tool
         public string DefaultPath { get; }
         public bool IsDirectory { get; }
 
-        public PathToolElement(string name, object source, string propertyName, bool isDirectory = false, string filter = "", string defaultPath = "", int maxLength = 1024) : base(name, source, propertyName)
+        public string RootDirectoryPathPropertyName { get; }
+
+        public PropertyInfo RootDirectoryPathPropertyInfo
+        {
+            get
+            {
+                try
+                {
+                    return Source?.GetType().GetProperty(RootDirectoryPathPropertyName);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
+
+        public PathToolElement(string name, object source, string propertyName, bool isDirectory = false, string filter = "", string defaultPath = "", int maxLength = 1024, string rootDirectoryPathPropertyName = null) : base(name, source, propertyName)
         {
             MaxLength = maxLength;
             Filter = filter;
             DefaultPath = defaultPath;
             IsDirectory = isDirectory;
+            RootDirectoryPathPropertyName = rootDirectoryPathPropertyName;
 
             if (!typeof(string).IsAssignableFrom(PropertyInfo?.PropertyType))
+            {
+                throw new ArgumentException("参照先がstring型ではありません");
+            }
+
+            if (RootDirectoryPathPropertyName != null && !typeof(string).IsAssignableFrom(RootDirectoryPathPropertyInfo?.PropertyType))
             {
                 throw new ArgumentException("参照先がstring型ではありません");
             }
@@ -44,12 +68,31 @@ namespace Altseed2Extension.Tool
             {
                 if (IsDirectory && (newPath = Engine.Tool.PickFolder(DefaultPath)) != null)
                 {
-                    PropertyInfo.SetValue(Source, newPath);
+                    SetPath(newPath);
                 }
                 else if ((newPath = Engine.Tool.OpenDialog(Filter, DefaultPath)) != null)
                 {
-                    PropertyInfo.SetValue(Source, newPath);
+                    SetPath(newPath);
                 }
+            }
+        }
+
+        private void SetPath(string newPath)
+        {
+            try
+            {
+                if (RootDirectoryPathPropertyInfo != null)
+                {
+                    var uri = new Uri((string)RootDirectoryPathPropertyInfo.GetValue(Source) + "/");
+                    var newPathUri = new Uri(newPath);
+                    newPath = uri.MakeRelativeUri(newPathUri).ToString();
+                }
+                PropertyInfo.SetValue(Source, newPath);
+            }
+            catch (Exception e)
+            {
+                Engine.Log.Error(LogCategory.User, e.Message);
+                Engine.Log.Error(LogCategory.User, e.StackTrace);
             }
         }
 
@@ -59,7 +102,8 @@ namespace Altseed2Extension.Tool
             var filter = objectMapping.Options.ContainsKey("filter") ? (string)objectMapping.Options["filter"] : "";
             var defaultPath = objectMapping.Options.ContainsKey("defaultPath") ? (string)objectMapping.Options["defaultPath"] : "";
             var maxLength = objectMapping.Options.ContainsKey("maxLength") ? (int)objectMapping.Options["maxLength"] : 1024;
-            return new PathToolElement(objectMapping.Name, source, objectMapping.PropertyName, isDirectory, filter, defaultPath, maxLength);
+            var rootDirectoryPathPropertyName = objectMapping.Options.ContainsKey("rootDirectoryPathPropertyName") ? (string)objectMapping.Options["rootDirectoryPathPropertyName"] : null;
+            return new PathToolElement(objectMapping.Name, source, objectMapping.PropertyName, isDirectory, filter, defaultPath, maxLength, rootDirectoryPathPropertyName);
         }
     }
 }
