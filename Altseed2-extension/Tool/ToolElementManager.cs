@@ -25,6 +25,7 @@ namespace Altseed2Extension.Tool
         Font,
         Enum,
         Button,
+        User,
     }
 
     public class ToolElementManager
@@ -223,6 +224,9 @@ namespace Altseed2Extension.Tool
                             case ToolButtonAttribute toolButtonAttribute:
                                 res[toolButtonAttribute.Name ?? info.Name] = new Tool.ButtonToolElement(toolButtonAttribute.Name ?? info.Name, source, info.Name);
                                 break;
+                            case ToolUserAttribute toolUserAttribute:
+                                res[toolUserAttribute.Name ?? info.Name] = new Tool.UserToolElement(toolUserAttribute.Name ?? info.Name, source, info.Name);
+                                break;
                         }
                     }
                     catch (Exception e)
@@ -323,6 +327,9 @@ namespace Altseed2Extension.Tool
                             break;
                         case ToolElementType.Button:
                             toolElement = ButtonToolElement.Create(source, objectMapping);
+                            break;
+                        case ToolElementType.User:
+                            toolElement = UserToolElement.Create(source, objectMapping);
                             break;
                         default:
                             Engine.Log.Error(LogCategory.User, $"{objectMapping.ToolElementType} is not defined.");
