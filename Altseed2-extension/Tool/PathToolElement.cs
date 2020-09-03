@@ -83,7 +83,7 @@ namespace Altseed2Extension.Tool
             {
                 if (RootDirectoryPathPropertyInfo != null)
                 {
-                    var uri = new Uri((string)RootDirectoryPathPropertyInfo.GetValue(Source) + "/");
+                    var uri = new Uri((string)RootDirectoryPathPropertyInfo.GetValue(Source));
                     var newPathUri = new Uri(newPath);
                     newPath = uri.MakeRelativeUri(newPathUri).ToString();
                 }
