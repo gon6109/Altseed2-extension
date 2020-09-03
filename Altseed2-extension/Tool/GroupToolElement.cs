@@ -36,7 +36,7 @@ namespace Altseed2Extension.Tool
                 ToolElements = ToolElementManager.CreateToolElements(t).ToList();
             }
 
-            if (Engine.Tool.CollapsingHeader(Name, ToolTreeNodeFlags.CollapsingHeader))
+            if (Engine.Tool.CollapsingHeader(Name, ToolTreeNodeFlags.CollapsingHeader | ToolTreeNodeFlags.Framed | ToolTreeNodeFlags.FramePadding))
             {
                 foreach (var toolElement in ToolElements ?? Enumerable.Empty<ToolElement>())
                 {
@@ -44,6 +44,7 @@ namespace Altseed2Extension.Tool
                     toolElement.Update();
                     Engine.Tool.PopID();
                 }
+                Engine.Tool.Spacing();
             }
         }
 
