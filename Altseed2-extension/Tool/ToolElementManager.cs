@@ -76,6 +76,9 @@ namespace Altseed2Extension.Tool
 
         public static IEnumerable<ToolElement> CreateToolElements(object source)
         {
+            if (source == null)
+                return Enumerable.Empty<ToolElement>();
+
             Dictionary<string, ToolElement> res = new Dictionary<string, ToolElement>();
 
             if (System.Attribute.IsDefined(source.GetType(), typeof(ToolAutoAttribute)))
