@@ -85,31 +85,28 @@ namespace Test
             Engine.Terminate();
         }
 
-        class RectangleUINode : UINode
+        class RectangleUINode : RectangleNode
         {
-            RectangleNode Rectangle { get; }
+            UINode UI { get; }
 
             public RectangleUINode()
             {
-                Rectangle = new RectangleNode();
-                Rectangle.RectangleSize = new Vector2F(100, 50);
-                Rectangle.Color = new Color(200, 200, 200);
+                UI = new UINode();
+                RectangleSize = new Vector2F(100, 50);
+                Color = new Color(200, 200, 200);
 
-                OnChangedFocus += OnChangedFocusRectangleUINode;
-                Size = new Vector2F(100, 50);
+                UI.OnChangedFocus += OnChangedFocusRectangleUINode;
 
-                AddChildNode(Rectangle);
+                AddChildNode(UI);
             }
 
             private void OnChangedFocusRectangleUINode(bool focus)
             {
                 if (focus)
-                    Rectangle.Color = new Color(200, 0, 0);
+                    Color = new Color(200, 0, 0);
                 else
-                    Rectangle.Color = new Color(200, 200, 200);
+                    Color = new Color(200, 200, 200);
             }
-
-            public new Vector2F Position { get => base.Position; set => Rectangle.Position = value; }
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -128,6 +125,8 @@ namespace Test
             }
 
             Engine.AddNode(parent);
+            parent.FlushQueue();
+            parent.ConnectUINodes();
 
             int count = 0;
             while (Engine.DoEvents())
@@ -135,6 +134,33 @@ namespace Test
                 if (count++ > 200) break;
                 Engine.Update();
                 Input.UpdateInput();
+            }
+
+            Engine.Terminate();
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        public void AnimationSpriteNode()
+        {
+            Engine.Initialize("AnimationNode", 800, 600, new Configuration());
+
+            var sprite = new AnimationSpriteNode();
+            sprite.Position = new Vector2F(400, 400);
+            sprite.Texture = Texture2D.Load("animation.png");
+            sprite.Size = new Vector2F(256, 256);
+            sprite.Duration = 0.8f;
+            sprite.Frame = 30;
+            sprite.IsLoop = true;
+            sprite.CenterPosition = sprite.ContentSize / 2.0f;
+            Engine.AddNode(sprite);
+
+            sprite.Play();
+
+            int count = 0;
+            while (Engine.DoEvents())
+            {
+                if (count++ > 200) break;
+                Engine.Update();
             }
 
             Engine.Terminate();
