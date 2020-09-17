@@ -3200,6 +3200,13 @@
             <see cref="T:Altseed2.ShaderCompileResult"/>のインスタンスを削除します。
             </summary>
         </member>
+        <member name="M:Altseed2.ShaderCompileResult.GetValuePtr">
+            <summary>
+            <see cref="M:Altseed2.Shader.cbg_Shader_Release(System.IntPtr)"/>を行わず<see cref="P:Altseed2.ShaderCompileResult.Value"/>を取得する
+            </summary>
+            <returns><see cref="P:Altseed2.ShaderCompileResult.Value"/></returns>
+            <remarks><see cref="T:Altseed2.Shader"/>デシリアライズ時に仕様</remarks>
+        </member>
         <member name="T:Altseed2.Shader">
             <summary>
             シェーダ
@@ -9430,6 +9437,23 @@
             <summary>
             エンジンに登録され、ノードツリーを辿って<see cref="T:Altseed2.RootNode"/> にたどり着けるかどうかを取得します。
             </summary>
+        </member>
+        <member name="P:Altseed2.Node.IsUpdated">
+            <summary>
+            この<see cref="T:Altseed2.Node"/>が更新されるかどうかを取得または設定します。
+            </summary>
+        </member>
+        <member name="P:Altseed2.Node.IsUpdatedActually">
+            <summary>
+            先祖の<see cref="P:Altseed2.Node.IsUpdated" />を考慮して、このノードが更新されるかどうかを取得します。
+            </summary>
+        </member>
+        <member name="M:Altseed2.Node.PropagateIsUpdatedActually(Altseed2.Node,System.Boolean)">
+            <summary>
+            子孫ノード<see cref="T:Altseed2.Node"/>に対して<see cref="P:Altseed2.Node.IsUpdatedActually"/>を伝播させます。
+            </summary>
+            <param name="node"><see cref="P:Altseed2.Node.IsUpdatedActually"/>を変更する対象のノード</param>
+            <param name="isUpdatedActually">親ノードの<see cref="P:Altseed2.Node.IsUpdatedActually"/></param>
         </member>
         <member name="M:Altseed2.Node.EnumerateAncestors">
             <summary>
