@@ -79,6 +79,12 @@ namespace Altseed2Extension.Node
         /// </summary>
         public bool IsRemoveNodeOnEndAnimation { get; set; }
 
+        protected override void OnAdded()
+        {
+            base.OnAdded();
+            Play();
+        }
+
         protected override void OnUpdate()
         {
             IsPlaying = coroutine?.MoveNext() ?? false;
