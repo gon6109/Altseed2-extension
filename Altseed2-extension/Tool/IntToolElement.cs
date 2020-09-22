@@ -30,7 +30,7 @@ namespace Altseed2Extension.Tool
             if (Source == null || PropertyInfo == null) return;
 
             int num = (int)PropertyInfo.GetValue(Source);
-            if (Engine.Tool.SliderInt(Name, ref num, Speed, Min, Max))
+            if (Engine.Tool.DragInt(Name, ref num, Speed, Min, Max))
             {
                 PropertyInfo.SetValue(Source, num);
             }
