@@ -91,6 +91,7 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    transformNode.Position = new Vector2F(GetEasing(move.easing, move.duration, start.X, move.to.X, move.duration), GetEasing(move.easing, move.duration, start.Y, move.to.Y, move.duration));
                 }
                 else if (node is AnchorTransformerNode anchorTransformerNode)
                 {
@@ -102,9 +103,10 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    anchorTransformerNode.Position = new Vector2F(GetEasing(move.easing, move.duration, start.X, move.to.X, move.duration), GetEasing(move.easing, move.duration, start.Y, move.to.Y, move.duration));
                 }
+                yield return null;
             }
-
 
             IEnumerator<object> GetScaleCoroutine(Altseed2.Node node, ScaleAnimationElement scale)
             {
@@ -118,6 +120,7 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    transformNode.Scale = new Vector2F(GetEasing(scale.easing, scale.duration, start.X, scale.to.X, scale.duration), GetEasing(scale.easing, scale.duration, start.Y, scale.to.Y, scale.duration));
                 }
                 else if (node is AnchorTransformerNode anchorTransformerNode)
                 {
@@ -129,7 +132,9 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    anchorTransformerNode.Scale = new Vector2F(GetEasing(scale.easing, scale.duration, start.X, scale.to.X, scale.duration), GetEasing(scale.easing, scale.duration, start.Y, scale.to.Y, scale.duration));
                 }
+                yield return null;
             }
 
             IEnumerator<object> GetRotateCoroutine(Altseed2.Node node, RotateAnimationElement rotate)
@@ -144,6 +149,7 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    transformNode.Angle = GetEasing(rotate.easing, rotate.duration, start, rotate.to, rotate.duration);
                 }
                 else if (node is AnchorTransformerNode anchorTransformerNode)
                 {
@@ -155,7 +161,9 @@ namespace Altseed2Extension.Node
                         yield return null;
                         current += Engine.DeltaSecond;
                     }
+                    anchorTransformerNode.Angle = GetEasing(rotate.easing, rotate.duration, start, rotate.to, rotate.duration);
                 }
+                yield return null;
             }
 
             IEnumerator<object> GetUserAnimationCoroutine(Altseed2.Node node, UserAnimationElement userAnimation)
@@ -167,6 +175,8 @@ namespace Altseed2Extension.Node
                     yield return null;
                     current += Engine.DeltaSecond;
                 }
+                userAnimation.easingFunc(userAnimation.easing, userAnimation.duration, userAnimation.duration, node);
+                yield return null;
             }
 
             public Animation Move(Vector2F from, Vector2F to, float duration, EasingType easing = EasingType.Linear)
