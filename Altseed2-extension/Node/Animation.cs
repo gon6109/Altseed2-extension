@@ -185,7 +185,7 @@ namespace Altseed2Extension.Node
                 {
                     from = from,
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = true
                 };
@@ -199,7 +199,7 @@ namespace Altseed2Extension.Node
                 var element = new MoveAnimationElement
                 {
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = false
                 };
@@ -220,7 +220,7 @@ namespace Altseed2Extension.Node
                 {
                     from = from,
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = true
                 };
@@ -234,7 +234,7 @@ namespace Altseed2Extension.Node
                 var element = new ScaleAnimationElement
                 {
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = false
                 };
@@ -255,7 +255,7 @@ namespace Altseed2Extension.Node
                 {
                     from = from,
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = true
                 };
@@ -269,7 +269,7 @@ namespace Altseed2Extension.Node
                 var element = new RotateAnimationElement
                 {
                     to = to,
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = false
                 };
@@ -288,7 +288,7 @@ namespace Altseed2Extension.Node
             {
                 var element = new UserAnimationElement
                 {
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     easing = easing,
                     isRequireFrom = false,
                     easingFunc = easingFunc
@@ -307,7 +307,7 @@ namespace Altseed2Extension.Node
             {
                 var element = new SleepAnimationElement
                 {
-                    duration = duration > 0 ? duration : 1,
+                    duration = duration > 0 ? duration : 0,
                     isRequireFrom = false
                 };
                 animationElements.Add(element);
@@ -319,7 +319,11 @@ namespace Altseed2Extension.Node
             {
             }
 
-            public static float GetEasing(EasingType easing, float duration, float start, float end, float current) => Easing.GetEasing(easing, current / duration) * (end - start) + start;
+            public static float GetEasing(EasingType easing, float duration, float start, float end, float current)
+            {
+                if (MathF.Abs(duration) < float.Epsilon) return end;
+                return Easing.GetEasing(easing, current / duration) * (end - start) + start;
+            }
         }
     }
 }
