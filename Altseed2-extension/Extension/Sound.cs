@@ -11,6 +11,7 @@ namespace Altseed2Extension.Extension
         private static float s_seVolume = 1;
 
         public static Sound Bgm { get; private set; }
+        public static HashSet<int> SoundIds { get; } = new HashSet<int>();
 
         /// <summary>
         /// BGMとして再生
@@ -48,6 +49,18 @@ namespace Altseed2Extension.Extension
         }
 
         /// <summary>
+        /// 全てのSEをフェードさせる
+        /// </summary>
+        /// <param name="duration"></param>
+        public static void FadeAllSE(float duration)
+        {
+            foreach (var id in SoundIds)
+            {
+                Engine.Sound.FadeOut(id, duration);
+            }
+        }
+
+        /// <summary>
         /// BGMボリューム
         /// </summary>
         public static float BgmVolume
@@ -74,6 +87,8 @@ namespace Altseed2Extension.Extension
         Altseed2.Sound sound;
         int id;
 
+        public Altseed2.Sound InternalSound => sound;
+
         /// <summary>
         /// 多重再生認めるか
         /// </summary>
@@ -96,11 +111,12 @@ namespace Altseed2Extension.Extension
         /// 再生
         /// </summary>
         /// <returns>再生ID</returns>
-        public int Play()
+        public int Play(float volume = 1f)
         {
             if (IsMultiplePlay && GetIsPlaying() && sound == null) return -1;
             id = Engine.Sound.Play(sound);
-            Engine.Sound.SetVolume(id, SeVolume);
+            Engine.Sound.SetVolume(id, SeVolume * volume);
+            SoundIds.Add(id);
             return id;
         }
 
@@ -111,8 +127,11 @@ namespace Altseed2Extension.Extension
         /// <returns></returns>
         public int Stop(int? id = null)
         {
-            Engine.Sound.Stop(id != null ? (int)id : this.id);
-            return this.id;
+            Engine.Sound.FadeOut(id ?? this.id, 1 / 60f);
+            var res = id ?? this.id;
+            this.id = -1;
+            SoundIds.Remove(id ?? this.id);
+            return res;
         }
 
         /// <summary>
