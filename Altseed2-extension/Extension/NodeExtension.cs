@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Altseed2Extension.Extension
@@ -45,6 +46,44 @@ namespace Altseed2Extension.Extension
                     default:
                         break;
                 }
+            }
+        }
+
+        public static void SetAlpha(this Altseed2.Node node, byte alpha)
+        {
+            
+            foreach (var descendant in node.EnumerateDescendants().Append(node))
+            {
+                switch (descendant)
+                {
+                    case Altseed2.SpriteNode sprite:
+                        sprite.Color = SetAlpha(sprite.Color, alpha);
+                        break;
+                    case Altseed2.TextNode text:
+                        text.Color = SetAlpha(text.Color, alpha);
+                        break;
+                    case Altseed2.ArcNode arc:
+                        arc.Color = SetAlpha(arc.Color, alpha);
+                        break;
+                    case Altseed2.CircleNode circle:
+                        circle.Color = SetAlpha(circle.Color, alpha);
+                        break;
+                    case Altseed2.RectangleNode rect:
+                        rect.Color = SetAlpha(rect.Color, alpha);
+                        break;
+                    case Altseed2.TriangleNode triangle:
+                        triangle.Color = SetAlpha(triangle.Color, alpha);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Altseed2.Color SetAlpha(Altseed2.Color origin, byte alpha)
+            {
+                var color = origin;
+                color.A = alpha;
+                return color;
             }
         }
     }
